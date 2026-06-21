@@ -10,4 +10,4 @@ The original book demonstrates patterns with **LangChain**, **LangGraph**, **Cre
 | Google ADK | Deployment + eval | [Evaluation](../part-4-multi-agent/19-evaluation.md) |
 | MCP SDK | Tool/resource hosts | [MCP](../part-2-advanced/10-mcp.md) |
 
-Porting tip: replace `get_llm()` calls with your framework's model node and wrap side effects as tools.
+Porting tip: use [`framework adapters`](./framework-adapters.md) to run kernel workflows through LangChain or LangGraph without rewriting pattern logic.

@@ -2,31 +2,9 @@
 
 from __future__ import annotations
 
-from agentic_patterns.common import get_llm
-from agentic_patterns.kernel import Router
+from agentic_patterns.demos.helpdesk import build_helpdesk_router
 
-
-def handle_password_reset(ticket: str) -> str:
-    return f"[PasswordReset] Sent MFA reset link for: {ticket}"
-
-
-def handle_software_install(ticket: str) -> str:
-    return f"[SoftwareInstall] Queued package deployment for: {ticket}"
-
-
-def handle_general_support(ticket: str) -> str:
-    return f"[GeneralSupport] Created follow-up task for: {ticket}"
-
-
-helpdesk_router = Router(
-    routes={
-        "password_reset": handle_password_reset,
-        "software_install": handle_software_install,
-        "general_support": handle_general_support,
-    },
-    default="general_support",
-    system="Reply with exactly one route label.",
-)
+helpdesk_router = build_helpdesk_router()
 
 
 if __name__ == "__main__":

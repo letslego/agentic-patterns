@@ -54,7 +54,7 @@ python code/01_prompt_chaining/main.py
 
 ### Appendix
 
-- [Framework notes](./appendix/frameworks.md)
+- [Framework adapters (LangChain / LangGraph)](./appendix/framework-adapters.md)
 
 ## Repository
 

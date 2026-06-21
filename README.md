@@ -55,9 +55,17 @@ python code/02_routing/main.py
 | 20 | Prioritization | [`code/20_prioritization/`](code/20_prioritization/) | [Chapter 20](docs/part-4-multi-agent/20-prioritization.md) |
 | 21 | Exploration & Discovery | [`code/21_exploration/`](code/21_exploration/) | [Chapter 21](docs/part-4-multi-agent/21-exploration.md) |
 
-## Documentation
+## Framework adapters
 
-Read the full companion guide starting at [`docs/index.md`](docs/index.md).
+Optional LangChain / LangGraph bridges (original glue, not book samples):
+
+```bash
+pip install -e ".[frameworks]"
+python examples/langchain_recipe_pipeline.py
+python examples/langgraph_helpdesk_router.py
+```
+
+See [`docs/appendix/framework-adapters.md`](docs/appendix/framework-adapters.md).
 
 ## License
 

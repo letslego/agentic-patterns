@@ -47,10 +47,13 @@ class MockLLMClient(LLMClient):
             )
 
         # Pattern 02 — IT helpdesk routing (not travel booking)
-        if "choose one route" in text or "route label" in text:
-            if "password" in text or "locked out" in text:
+        if "choose one route label" in text or "route label:" in text:
+            msg_part = text
+            if "message:" in text:
+                msg_part = text.split("message:", 1)[1].split("choose", 1)[0].lower()
+            if "password" in msg_part or "locked out" in msg_part:
                 return "password_reset"
-            if "install" in text or "software" in text:
+            if "install" in msg_part or "software" in msg_part or "figma" in msg_part:
                 return "software_install"
             return "general_support"
 

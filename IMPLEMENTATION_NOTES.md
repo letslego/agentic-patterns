@@ -11,6 +11,8 @@ This repository implements the **agentic design pattern taxonomy** described in 
 | Laptop specs → JSON extraction demo | Recipe ingredients → normalized units → shopping list JSON |
 | CrewAI `get_stock_price` tool demo | Travel toolkit (`timezone_lookup`, `currency_convert`) |
 | Google ADK coordinator samples | Framework-agnostic `Router`, `Crew`, `CapabilityHost` |
+| LangChain/LCEL book snippets | `agentic_patterns/adapters/langchain_bridge.py` wrapping kernel |
+| LangGraph book graphs | `agentic_patterns/adapters/langgraph_bridge.py` compiling kernel workflows |
 
 ## Principles
 
