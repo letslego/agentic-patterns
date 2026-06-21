@@ -1,14 +1,14 @@
 # Agentic Patterns
 
-Reference implementations and companion guide for **21 agentic design patterns** inspired by [*Agentic Design Patterns: A Hands-On Guide to Building Intelligent Systems*](https://www.google.com/books/edition/Agentic_Design_Patterns/) by Antonio Gulli.
+Reference implementations and guide for **21 agentic design patterns** for building intelligent, autonomous systems.
 
 This repository provides:
 
 - **Runnable Python examples** for every pattern (works offline with a mock LLM)
-- **Original diagrams** and a markdown companion guide in [`docs/`](docs/)
+- **Original diagrams** and a markdown guide in [`docs/`](docs/)
 - **Cross-links** from each guide section to the matching code module
 
-> **Note:** This is an independent companion project with **clean-room code**. It does not copy LangChain/LCEL, ADK, or CrewAI samples from the book. See [`IMPLEMENTATION_NOTES.md`](IMPLEMENTATION_NOTES.md).
+> **Note:** Examples use **original, framework-agnostic code** with optional LangChain/LangGraph adapters. See [`IMPLEMENTATION_NOTES.md`](IMPLEMENTATION_NOTES.md).
 
 ## Quick start
 
@@ -66,7 +66,7 @@ npm install
 npm run docs:dev
 ```
 
-Optional LangChain / LangGraph bridges (original glue, not book samples):
+Optional LangChain / LangGraph bridges:
 
 ```bash
 pip install -e ".[frameworks]"
@@ -78,7 +78,7 @@ See [`docs/appendix/framework-adapters.md`](docs/appendix/framework-adapters.md)
 
 ## License
 
-MIT — see [LICENSE](LICENSE). Pattern names and conceptual structure acknowledge Antonio Gulli's *Agentic Design Patterns*.
+MIT — see [LICENSE](LICENSE).
 
 ## Contributing
 

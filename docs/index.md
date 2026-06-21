@@ -1,12 +1,12 @@
-# Agentic Patterns — Companion Guide
+# Agentic Patterns Guide
 
-An original, code-linked companion to the 21 agentic design patterns described in Antonio Gulli's [*Agentic Design Patterns*](https://irp.cdn-website.com/ca79032a/files/uploaded/Agentic-Design-Patterns.pdf).
+A code-linked guide to **21 agentic design patterns** for building intelligent systems.
 
 ![Agent capability levels](./images/agent-levels.svg)
 
 ## How to use this guide
 
-Each chapter explains one pattern in plain language, shows an **original diagram** (not reproduced from the book), and links to a **runnable reference implementation** in this repository.
+Each chapter explains one pattern in plain language, includes an **original diagram**, and links to a **runnable reference implementation** in this repository.
 
 ```bash
 # Example: run Pattern 01 without API keys
@@ -54,6 +54,7 @@ python code/01_prompt_chaining/main.py
 
 ### Appendix
 
+- [Framework notes](./appendix/frameworks.md)
 - [Framework adapters (LangChain / LangGraph)](./appendix/framework-adapters.md)
 
 ## Repository

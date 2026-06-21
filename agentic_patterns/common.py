@@ -46,7 +46,7 @@ class MockLLMClient(LLMClient):
                 indent=2,
             )
 
-        # Pattern 02 — IT helpdesk routing (not travel booking)
+        # Pattern 02 — IT helpdesk routing
         if "choose one route label" in text or "route label:" in text:
             msg_part = text
             if "message:" in text:

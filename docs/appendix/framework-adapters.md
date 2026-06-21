@@ -1,6 +1,6 @@
 # Framework Adapters (LangChain & LangGraph)
 
-The kernel in `agentic_patterns/kernel.py` stays framework-agnostic. Adapter modules expose the same workflows through LangChain `Runnable` objects and compiled LangGraph state machines—**without copying book sample code**.
+The kernel in `agentic_patterns/kernel.py` stays framework-agnostic. Adapter modules expose the same workflows through LangChain `Runnable` objects and compiled LangGraph state machines.
 
 ## Install
 

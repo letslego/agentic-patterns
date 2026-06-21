@@ -30,5 +30,5 @@ See the [pattern index](../index.md).
 
 ## Further reading
 
-- Antonio Gulli, *Agentic Design Patterns* — official pattern definitions
-- [`agentic_patterns/common.py`](https://github.com/letslego/agentic-patterns/blob/main/agentic_patterns/common.py)
+- [`agentic_patterns/kernel.py`](https://github.com/letslego/agentic-patterns/blob/main/agentic_patterns/kernel.py) — pipeline primitives
+- [`agentic_patterns/common.py`](https://github.com/letslego/agentic-patterns/blob/main/agentic_patterns/common.py) — shared LLM client utilities

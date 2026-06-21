@@ -1,8 +1,4 @@
-"""Original runtime primitives for agentic pattern examples.
-
-Clean-room implementations: same *patterns* as published references, but distinct
-APIs, control flow, and demo domains.
-"""
+"""Original runtime primitives for agentic pattern examples."""
 
 from __future__ import annotations
 

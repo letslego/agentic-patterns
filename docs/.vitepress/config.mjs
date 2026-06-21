@@ -84,7 +84,7 @@ export default defineConfig({
       text: 'Edit this page on GitHub',
     },
     footer: {
-      message: 'Companion guide inspired by Antonio Gulli\'s Agentic Design Patterns.',
+      message: 'Open-source guide and reference code for agentic design patterns.',
       copyright: 'MIT License',
     },
     search: { provider: 'local' },

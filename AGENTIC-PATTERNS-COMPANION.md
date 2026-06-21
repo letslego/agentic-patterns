@@ -1,13 +1,13 @@
 <!-- source: docs/index.md -->
-# Agentic Patterns — Companion Guide
+# Agentic Patterns Guide
 
-An original, code-linked companion to the 21 agentic design patterns described in Antonio Gulli's [*Agentic Design Patterns*](https://irp.cdn-website.com/ca79032a/files/uploaded/Agentic-Design-Patterns.pdf).
+A code-linked guide to **21 agentic design patterns** for building intelligent systems.
 
 ![Agent capability levels](./images/agent-levels.svg)
 
 ## How to use this guide
 
-Each chapter explains one pattern in plain language, shows an **original diagram** (not reproduced from the book), and links to a **runnable reference implementation** in this repository.
+Each chapter explains one pattern in plain language, includes an **original diagram**, and links to a **runnable reference implementation** in this repository.
 
 ```bash
 # Example: run Pattern 01 without API keys
@@ -55,11 +55,14 @@ python code/01_prompt_chaining/main.py
 
 ### Appendix
 
+- [Framework notes](./appendix/frameworks.md)
 - [Framework adapters (LangChain / LangGraph)](./appendix/framework-adapters.md)
 
 ## Repository
 
 All code lives at [github.com/letslego/agentic-patterns](https://github.com/letslego/agentic-patterns).
+
+**Live site:** [letslego.github.io/agentic-patterns](https://letslego.github.io/agentic-patterns/)
 
 
 ---
@@ -90,9 +93,9 @@ Shared utilities live in [`agentic_patterns/common.py`](https://github.com/letsl
 
 Set `AGENTIC_LLM_PROVIDER=openai` to swap in a real provider—see [`agentic_patterns/providers.py`](https://github.com/letslego/agentic-patterns/blob/main/agentic_patterns/providers.py).
 
-## Attribution
+## Architecture
 
-Conceptual pattern names and taxonomy follow Antonio Gulli's *Agentic Design Patterns* (Springer, 2025). This guide's prose, diagrams, and code are original companion material.
+Pattern logic lives in `agentic_patterns/kernel.py` with optional adapters for LangChain and LangGraph. See the [framework adapters appendix](./appendix/framework-adapters.md).
 
 
 ---
@@ -130,8 +133,8 @@ See the [pattern index](../index.md).
 
 ## Further reading
 
-- Antonio Gulli, *Agentic Design Patterns* — official pattern definitions
-- [`agentic_patterns/common.py`](https://github.com/letslego/agentic-patterns/blob/main/agentic_patterns/common.py)
+- [`agentic_patterns/kernel.py`](https://github.com/letslego/agentic-patterns/blob/main/agentic_patterns/kernel.py) — pipeline primitives
+- [`agentic_patterns/common.py`](https://github.com/letslego/agentic-patterns/blob/main/agentic_patterns/common.py) — shared LLM client utilities
 
 
 ---
@@ -709,7 +712,7 @@ python code/21_exploration/main.py
 <!-- source: docs/appendix/frameworks.md -->
 # Appendix: Framework Notes
 
-The original book demonstrates patterns with **LangChain**, **LangGraph**, **CrewAI**, and **Google ADK**. This repository keeps examples framework-agnostic so you can port them quickly.
+Many production agent stacks use **LangChain**, **LangGraph**, **CrewAI**, or **Google ADK**. This repository keeps core examples framework-agnostic so you can port them quickly.
 
 | Framework | Strength | Map to patterns |
 |-----------|----------|-----------------|

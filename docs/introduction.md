@@ -23,6 +23,6 @@ Shared utilities live in [`agentic_patterns/common.py`](https://github.com/letsl
 
 Set `AGENTIC_LLM_PROVIDER=openai` to swap in a real provider—see [`agentic_patterns/providers.py`](https://github.com/letslego/agentic-patterns/blob/main/agentic_patterns/providers.py).
 
-## Attribution
+## Architecture
 
-Conceptual pattern names and taxonomy follow Antonio Gulli's *Agentic Design Patterns* (Springer, 2025). This guide's prose, diagrams, and code are original companion material.
+Pattern logic lives in `agentic_patterns/kernel.py` with optional adapters for LangChain and LangGraph. See the [framework adapters appendix](./appendix/framework-adapters.md).

@@ -1,6 +1,6 @@
 # Appendix: Framework Notes
 
-The original book demonstrates patterns with **LangChain**, **LangGraph**, **CrewAI**, and **Google ADK**. This repository keeps examples framework-agnostic so you can port them quickly.
+Many production agent stacks use **LangChain**, **LangGraph**, **CrewAI**, or **Google ADK**. This repository keeps core examples framework-agnostic so you can port them quickly.
 
 | Framework | Strength | Map to patterns |
 |-----------|----------|-----------------|
