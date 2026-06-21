@@ -5,7 +5,7 @@ const owner = 'letslego'
 
 export default defineConfig({
   title: 'Agentic Patterns',
-  description: 'Companion guide and reference code for 21 agentic design patterns',
+  description: 'Guide and reference code for 21 agentic design patterns',
   base: `/${repo}/`,
   lang: 'en-US',
   cleanUrls: true,
