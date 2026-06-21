@@ -10,7 +10,7 @@ Break complex tasks into a linear sequence of focused LLM calls. Each step consu
 
 **Source:** [`code/01_prompt_chaining/main.py`](https://github.com/letslego/agentic-patterns/blob/main/code/01_prompt_chaining/main.py)
 
-Split extraction and transformation into two explicit functions: `extract_specs()` then `to_json()`.
+Split ingredient extraction, unit normalization, and shopping-list JSON into three pipeline stages using `Pipeline` + `StageContext` (not LangChain LCEL).
 
 ### Run locally
 

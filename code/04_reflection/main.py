@@ -1,37 +1,41 @@
-"""Pattern 04: Reflection — generate, critique, and revise."""
+"""Pattern 04: Reflection — press release draft/review loop."""
 
 from __future__ import annotations
 
 from agentic_patterns.common import get_llm
 
 
-def draft(task: str) -> str:
-    llm = get_llm()
-    return llm.complete(f"Write a short plan for: {task}")
-
-
-def critique(text: str) -> str:
+def draft_release(topic: str) -> str:
     llm = get_llm()
     return llm.complete(
-        f"Critique this draft and list concrete improvements:\n\n{text}",
-        system="Be specific and actionable.",
+        f"Draft a one-sentence press release about: {topic}",
+        system="Be factual.",
     )
 
 
-def revise(text: str, feedback: str) -> str:
+def editorial_review(draft: str) -> str:
     llm = get_llm()
     return llm.complete(
-        f"Revise the draft using this feedback.\n\nDraft:\n{text}\n\nFeedback:\n{feedback}"
+        f"Provide editorial review for this release:\n{draft}",
+        system="List concrete fixes only.",
     )
 
 
-def reflect_loop(task: str, *, rounds: int = 2) -> str:
-    current = draft(task)
+def revise_release(draft: str, feedback: str) -> str:
+    llm = get_llm()
+    return llm.complete(
+        f"Revise release using feedback.\nDraft:\n{draft}\nFeedback:\n{feedback}",
+        system="Return final release sentence.",
+    )
+
+
+def reflective_release(topic: str, *, rounds: int = 2) -> str:
+    current = draft_release(topic)
     for _ in range(rounds):
-        feedback = critique(current)
-        current = revise(current, feedback)
+        notes = editorial_review(current)
+        current = revise_release(current, notes)
     return current
 
 
 if __name__ == "__main__":
-    print(reflect_loop("Launch a beta program for a developer tool"))
+    print(reflective_release("Orion SDK for edge inference"))

@@ -1,4 +1,4 @@
-"""Pattern 19: Evaluation and Monitoring — score agent outputs."""
+"""Pattern 19: Evaluation and Monitoring — rolling quality ledger."""
 
 from __future__ import annotations
 
@@ -9,40 +9,37 @@ from agentic_patterns.common import get_llm
 
 
 @dataclass
-class EvalRecord:
+class QualitySample:
     prompt: str
-    output: str
+    answer: str
     score: float
 
 
 @dataclass
-class EvalMonitor:
-    records: list[EvalRecord] = field(default_factory=list)
+class QualityLedger:
+    samples: list[QualitySample] = field(default_factory=list)
 
-    def score(self, prompt: str, output: str) -> float:
+    def record(self, prompt: str, answer: str) -> float:
         llm = get_llm()
         raw = llm.complete(
-            f"Rate answer quality from 0 to 1.\nPrompt: {prompt}\nAnswer: {output}\nReturn number only."
+            f"Rate answer quality 0..1.\nPrompt:{prompt}\nAnswer:{answer}\nNumber only."
         )
         try:
-            value = float(raw.strip().split()[0])
+            score = float(raw.strip().split()[0])
         except ValueError:
-            value = 0.5
-        record = EvalRecord(prompt, output, max(0.0, min(value, 1.0)))
-        self.records.append(record)
-        return record.score
+            score = 0.5
+        score = max(0.0, min(score, 1.0))
+        self.samples.append(QualitySample(prompt, answer, score))
+        return score
 
-    def summary(self) -> dict[str, float]:
-        if not self.records:
-            return {"count": 0, "avg_score": 0.0}
-        return {
-            "count": float(len(self.records)),
-            "avg_score": mean(r.score for r in self.records),
-        }
+    def snapshot(self) -> dict[str, float]:
+        if not self.samples:
+            return {"count": 0.0, "mean_score": 0.0}
+        return {"count": float(len(self.samples)), "mean_score": mean(s.score for s in self.samples)}
 
 
 if __name__ == "__main__":
-    monitor = EvalMonitor()
-    monitor.score("What is prompt chaining?", "It splits tasks into sequential prompts.")
-    monitor.score("What is routing?", "It classifies requests to specialists.")
-    print(monitor.summary())
+    ledger = QualityLedger()
+    ledger.record("Define routing.", "Routing picks a specialist handler.")
+    ledger.record("Define RAG.", "RAG grounds answers in retrieved docs.")
+    print(ledger.snapshot())

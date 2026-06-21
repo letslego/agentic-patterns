@@ -1,4 +1,4 @@
-"""Pattern 09: Learning and Adaptation — update behavior from feedback."""
+"""Pattern 09: Learning and Adaptation — style profile from feedback."""
 
 from __future__ import annotations
 
@@ -8,25 +8,35 @@ from agentic_patterns.common import get_llm
 
 
 @dataclass
-class AdaptiveAgent:
-    system_prompt: str = "You are a concise helpful assistant."
-    feedback_log: list[str] = field(default_factory=list)
+class StyleProfile:
+    tone: str = "neutral"
+    format_hint: str = "paragraph"
+    notes: list[str] = field(default_factory=list)
 
-    def respond(self, user_input: str) -> str:
+    def apply_feedback(self, feedback: str) -> None:
+        self.notes.append(feedback)
         llm = get_llm()
-        return llm.complete(user_input, system=self.system_prompt)
+        updated = llm.complete(
+            "Update writing style profile from feedback.\n"
+            f"Current tone={self.tone}, format={self.format_hint}\n"
+            f"Feedback: {feedback}\n"
+            "Return JSON with tone and format_hint."
+        )
+        if "bullet" in updated.lower():
+            self.format_hint = "bullets"
+        if "formal" in updated.lower():
+            self.tone = "formal"
 
-    def learn_from_feedback(self, feedback: str) -> None:
-        self.feedback_log.append(feedback)
+    def render(self, topic: str) -> str:
         llm = get_llm()
-        self.system_prompt = llm.complete(
-            "Update the system prompt using this feedback. Return prompt text only.\n"
-            f"Current prompt:\n{self.system_prompt}\n\nFeedback:\n{feedback}"
+        return llm.complete(
+            f"Explain {topic}",
+            system=f"Tone={self.tone}; format={self.format_hint}.",
         )
 
 
 if __name__ == "__main__":
-    agent = AdaptiveAgent()
-    print(agent.respond("Explain prompt chaining in one sentence."))
-    agent.learn_from_feedback("Prefer bullet points and include a code pointer.")
-    print("\nUpdated system prompt:\n", agent.system_prompt)
+    profile = StyleProfile()
+    print(profile.render("vector indexes"))
+    profile.apply_feedback("Use bullet points and a formal tone.")
+    print("\nUpdated profile:", profile.tone, profile.format_hint)

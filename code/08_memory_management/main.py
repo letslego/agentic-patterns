@@ -1,4 +1,4 @@
-"""Pattern 08: Memory Management — short-term buffer plus long-term store."""
+"""Pattern 08: Memory Management — episodic buffer + fact vault."""
 
 from __future__ import annotations
 
@@ -9,25 +9,28 @@ from agentic_patterns.common import get_llm
 
 
 @dataclass
-class MemoryStore:
-    short_term: deque[str] = field(default_factory=lambda: deque(maxlen=8))
-    long_term: dict[str, str] = field(default_factory=dict)
+class EpisodicMemory:
+    window: deque[str] = field(default_factory=lambda: deque(maxlen=6))
+    fact_vault: dict[str, str] = field(default_factory=dict)
 
-    def remember(self, key: str, value: str, *, persistent: bool = False) -> None:
-        self.short_term.append(f"{key}: {value}")
-        if persistent:
-            self.long_term[key] = value
+    def observe(self, event: str) -> None:
+        self.window.append(event)
 
-    def recall(self, query: str) -> str:
-        context = "\n".join(self.short_term)
-        if query in self.long_term:
-            context += f"\nlong_term[{query}]={self.long_term[query]}"
+    def store_fact(self, key: str, value: str) -> None:
+        self.fact_vault[key] = value
+
+    def answer(self, question: str) -> str:
         llm = get_llm()
-        return llm.complete(f"Using memory context:\n{context}\n\nAnswer: {query}")
+        episodic = "\n".join(self.window)
+        facts = "\n".join(f"{k}={v}" for k, v in self.fact_vault.items())
+        return llm.complete(
+            f"Episodic log:\n{episodic}\n\nFacts:\n{facts}\n\nQuestion: {question}"
+        )
 
 
 if __name__ == "__main__":
-    mem = MemoryStore()
-    mem.remember("user_name", "Alex", persistent=True)
-    mem.remember("topic", "agent memory patterns")
-    print(mem.recall("What topic are we discussing and who is the user?"))
+    memory = EpisodicMemory()
+    memory.store_fact("tenant", "northwind")
+    memory.observe("User asked about SSO rollout timeline.")
+    memory.observe("User prefers weekly status emails.")
+    print(memory.answer("Which tenant am I working with and what did I ask about?"))

@@ -1,4 +1,4 @@
-"""Pattern 15: Inter-Agent Communication (A2A) — message bus between agents."""
+"""Pattern 15: Inter-Agent Communication — typed event envelope."""
 
 from __future__ import annotations
 
@@ -6,40 +6,38 @@ from dataclasses import dataclass, field
 from typing import Callable
 
 
-@dataclass
-class AgentMessage:
-    sender: str
-    recipient: str
+@dataclass(frozen=True)
+class AgentEvent:
     topic: str
-    body: str
+    sender: str
+    payload: str
+    correlation_id: str
 
 
 @dataclass
-class MessageBus:
-    subscribers: dict[str, list[Callable[[AgentMessage], None]]] = field(default_factory=dict)
+class EventBroker:
+    _handlers: dict[str, list[Callable[[AgentEvent], None]]] = field(default_factory=dict)
 
-    def subscribe(self, agent_name: str, handler: Callable[[AgentMessage], None]) -> None:
-        self.subscribers.setdefault(agent_name, []).append(handler)
+    def on(self, topic: str, handler: Callable[[AgentEvent], None]) -> None:
+        self._handlers.setdefault(topic, []).append(handler)
 
-    def publish(self, message: AgentMessage) -> None:
-        for handler in self.subscribers.get(message.recipient, []):
-            handler(message)
+    def emit(self, event: AgentEvent) -> None:
+        for handler in self._handlers.get(event.topic, []):
+            handler(event)
 
 
 if __name__ == "__main__":
-    bus = MessageBus()
-    inbox: list[str] = []
+    broker = EventBroker()
+    audit: list[str] = []
 
-    def on_message(msg: AgentMessage) -> None:
-        inbox.append(f"{msg.sender}->{msg.recipient}: {msg.body}")
+    broker.on("security.alert", lambda e: audit.append(f"{e.sender}: {e.payload}"))
 
-    bus.subscribe("planner", on_message)
-    bus.publish(
-        AgentMessage(
-            sender="researcher",
-            recipient="planner",
-            topic="requirements",
-            body="Users need SSO and audit logs.",
+    broker.emit(
+        AgentEvent(
+            topic="security.alert",
+            sender="detector-7",
+            payload="Suspicious login from new region",
+            correlation_id="c-8842",
         )
     )
-    print("\n".join(inbox))
+    print("\n".join(audit))

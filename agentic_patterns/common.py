@@ -27,36 +27,83 @@ class MockLLMClient(LLMClient):
 
     def complete(self, prompt: str, *, system: str | None = None) -> str:
         text = prompt.lower()
-        if "extract" in text and "specification" in text:
-            return "CPU: 3.5 GHz octa-core, Memory: 16GB RAM, Storage: 1TB NVMe SSD"
-        if "json" in text or "transform" in text:
+
+        # Pattern 01 — recipe pipeline (not hardware specs)
+        if "ingredient" in text and "extract" in text:
+            return "2 cups flour, 1 tsp yeast, 1 cup water, 1 tbsp olive oil"
+        if "normalize" in text or "canonical units" in text:
+            return "flour: 480g, yeast: 5g, water: 240ml, olive_oil: 15ml"
+        if "shopping list" in text or "grocery json" in text:
             return json.dumps(
-                {"cpu": "3.5 GHz octa-core", "memory": "16GB", "storage": "1TB NVMe SSD"},
+                {
+                    "items": [
+                        {"name": "bread flour", "quantity": "480g"},
+                        {"name": "instant yeast", "quantity": "5g"},
+                        {"name": "water", "quantity": "240ml"},
+                        {"name": "olive oil", "quantity": "15ml"},
+                    ]
+                },
                 indent=2,
             )
-        if "route" in text or "classify" in text:
-            if "refund" in text:
-                return "billing"
-            if "bug" in text or "error" in text:
-                return "engineering"
-            return "general"
-        if "critique" in text or "review" in text:
-            return "Improve clarity and add concrete acceptance criteria."
-        if "revise" in text or "rewrite" in text:
-            return "Revised draft with clearer structure and acceptance criteria."
-        if "plan" in text or "steps" in text:
-            return "1. Gather requirements\n2. Design API\n3. Implement\n4. Test\n5. Deploy"
-        if "summarize" in text:
-            return "Summary: " + prompt[:120]
-        if "search" in text or "retrieve" in text:
-            return "Retrieved doc: Agents use tools, memory, and planning to achieve goals."
-        if "calculator" in text or "pick a tool" in text:
-            return '{"tool": "calculator", "args": {"expression": "12 * (4 + 3)"}}'
-        if "score" in text or "evaluate" in text or "rate answer" in text:
-            return "0.82"
-        if "reason" in text or "think" in text:
-            return "Thought: break problem into sub-goals.\nAction: call_search\nObservation: found 3 docs"
-        return f"[mock response] {prompt[:160]}"
+
+        # Pattern 02 — IT helpdesk routing (not travel booking)
+        if "choose one route" in text or "route label" in text:
+            if "password" in text or "locked out" in text:
+                return "password_reset"
+            if "install" in text or "software" in text:
+                return "software_install"
+            return "general_support"
+
+        # Pattern 04 — press release reflection
+        if "press release" in text and "draft" in text:
+            return "Acme Labs announces Orion SDK for edge inference."
+        if "editorial review" in text or "editor feedback" in text:
+            return "Add customer quote and ship date."
+        if "revise release" in text:
+            return "Acme Labs announces Orion SDK; beta ships Q3 with pilot quote."
+
+        # Pattern 05 — travel toolkit selection
+        if "select tool" in text or "tool manifest" in text:
+            if "timezone" in text:
+                return '{"tool":"timezone_lookup","args":{"city":"Tokyo"}}'
+            if "currency" in text:
+                return '{"tool":"currency_convert","args":{"amount":100,"from":"USD","to":"JPY"}}'
+            return '{"tool":"timezone_lookup","args":{"city":"Tokyo"}}'
+
+        # Pattern 06 — data migration plan
+        if "migration plan" in text or "numbered milestones" in text:
+            return "1. Inventory schemas\n2. Build ETL\n3. Shadow write\n4. Cutover\n5. Validate"
+
+        # Pattern 07 — incident response crew
+        if "role: sre" in text:
+            return "Detected elevated 5xx on checkout API."
+        if "role: comms" in text:
+            return "Draft status page update for checkout degradation."
+        if "role: fix" in text:
+            return "Rollback deploy v842 and scale pods +2."
+
+        if "summarize" in text and "survey" in text:
+            return "Theme: onboarding friction (n=12 mentions)."
+
+        if "merge themes" in text:
+            return "Users report onboarding friction and unclear billing emails."
+
+        if "retrieve" in text and "policy" in text:
+            return "[doc-17] Remote work policy allows 2 WFH days/week."
+
+        if "score" in text or "rate answer" in text:
+            return "0.78"
+
+        if "hypothesis" in text:
+            return "1. Email campaign caused traffic spike\n2. Deploy regression\n3. Seasonality"
+
+        if "confidence" in text:
+            return "0.71"
+
+        if "reasoning trace" in text or "thought/action" in text:
+            return "Thought: compare routing vs rules.\nFinal Answer: use hybrid router."
+
+        return f"[mock response] {prompt[:140]}"
 
 
 def get_llm() -> LLMClient:

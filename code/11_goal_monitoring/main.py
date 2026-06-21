@@ -1,4 +1,4 @@
-"""Pattern 11: Goal Setting and Monitoring — track progress against targets."""
+"""Pattern 11: Goal Setting and Monitoring — SLA dashboard."""
 
 from __future__ import annotations
 
@@ -6,52 +6,47 @@ from dataclasses import dataclass, field
 
 
 @dataclass
-class Goal:
-    name: str
+class SLA:
+    metric: str
     target: float
-    current: float = 0.0
-    unit: str = ""
+    observed: float = 0.0
+    comparator: str = "lte"  # lte => observed must be <= target
 
     @property
-    def progress(self) -> float:
-        if self.target == 0:
-            return 1.0
-        return min(self.current / self.target, 1.0)
-
-    @property
-    def met(self) -> bool:
-        return self.current >= self.target
+    def satisfied(self) -> bool:
+        if self.comparator == "lte":
+            return self.observed <= self.target
+        return self.observed >= self.target
 
 
 @dataclass
-class GoalMonitor:
-    goals: list[Goal] = field(default_factory=list)
+class SLADashboard:
+    slas: list[SLA] = field(default_factory=list)
 
-    def add_goal(self, goal: Goal) -> None:
-        self.goals.append(goal)
-
-    def update(self, name: str, value: float) -> None:
-        for goal in self.goals:
-            if goal.name == name:
-                goal.current = value
+    def track(self, metric: str, value: float) -> None:
+        for sla in self.slas:
+            if sla.metric == metric:
+                sla.observed = value
                 return
-        raise KeyError(name)
+        raise KeyError(metric)
 
-    def status_report(self) -> str:
-        lines = ["Goal Status"]
-        for goal in self.goals:
-            pct = round(goal.progress * 100, 1)
-            flag = "OK" if goal.met else "IN_PROGRESS"
+    def report(self) -> str:
+        lines = ["SLA dashboard"]
+        for sla in self.slas:
+            status = "PASS" if sla.satisfied else "FAIL"
             lines.append(
-                f"- {goal.name}: {goal.current}/{goal.target}{goal.unit} ({pct}%) [{flag}]"
+                f"- {sla.metric}: observed={sla.observed} target={sla.target} [{status}]"
             )
         return "\n".join(lines)
 
 
 if __name__ == "__main__":
-    monitor = GoalMonitor()
-    monitor.add_goal(Goal("resolved_tickets", target=50, unit=" tickets"))
-    monitor.add_goal(Goal("avg_latency_ms", target=800, unit=" ms"))
-    monitor.update("resolved_tickets", 37)
-    monitor.update("avg_latency_ms", 640)
-    print(monitor.status_report())
+    board = SLADashboard(
+        slas=[
+            SLA("p95_latency_ms", target=500),
+            SLA("successful_rollouts", target=3, comparator="gte"),
+        ]
+    )
+    board.track("p95_latency_ms", 430)
+    board.track("successful_rollouts", 4)
+    print(board.report())

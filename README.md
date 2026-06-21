@@ -8,7 +8,7 @@ This repository provides:
 - **Original diagrams** and a markdown companion guide in [`docs/`](docs/)
 - **Cross-links** from each guide section to the matching code module
 
-> **Note:** This is an independent companion project. It does not reproduce the original book text. For the full treatment, diagrams, and extended appendices, please refer to the official publication.
+> **Note:** This is an independent companion project with **clean-room code**. It does not copy LangChain/LCEL, ADK, or CrewAI samples from the book. See [`IMPLEMENTATION_NOTES.md`](IMPLEMENTATION_NOTES.md).
 
 ## Quick start
 

@@ -10,7 +10,7 @@ Classify incoming requests and dispatch them to specialized handlers or sub-agen
 
 **Source:** [`code/02_routing/main.py`](https://github.com/letslego/agentic-patterns/blob/main/code/02_routing/main.py)
 
-A router LLM returns a label; `ROUTES` maps labels to handler callables.
+IT helpdesk router maps tickets to `password_reset`, `software_install`, or `general_support` handlers via `agentic_patterns.kernel.Router`.
 
 ### Run locally
 

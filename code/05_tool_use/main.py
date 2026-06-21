@@ -1,4 +1,4 @@
-"""Pattern 05: Tool Use — LLM selects and invokes external tools."""
+"""Pattern 05: Tool Use — travel assistant with explicit tool manifest."""
 
 from __future__ import annotations
 
@@ -6,60 +6,51 @@ import json
 from dataclasses import dataclass
 from typing import Any, Callable
 
-from agentic_patterns.common import get_llm
+from agentic_patterns.common import extract_json, get_llm
 
 
-@dataclass
-class Tool:
+@dataclass(frozen=True)
+class TravelTool:
     name: str
     description: str
-    fn: Callable[..., Any]
-
-    def schema(self) -> dict[str, Any]:
-        return {"name": self.name, "description": self.description}
+    invoke: Callable[[dict[str, Any]], str]
 
 
-TOOLS: dict[str, Tool] = {
-    "search": Tool(
-        "search",
-        "Search the knowledge base",
-        lambda query: f"Results for '{query}': doc1, doc2",
+MANIFEST: dict[str, TravelTool] = {
+    "timezone_lookup": TravelTool(
+        "timezone_lookup",
+        "Return local time for a city",
+        lambda args: f"{args.get('city', 'Unknown')}: 09:30 JST",
     ),
-    "calculator": Tool(
-        "calculator",
-        "Evaluate a math expression",
-        lambda expression: str(eval(expression, {"__builtins__": {}}, {})),
+    "currency_convert": TravelTool(
+        "currency_convert",
+        "Convert currency amounts",
+        lambda args: f"{args['amount']} {args['from']} -> {float(args['amount']) * 150:.0f} {args['to']}",
     ),
 }
 
 
-def choose_tool(question: str) -> tuple[str, dict[str, Any]]:
+def pick_tool(question: str) -> tuple[str, dict[str, Any]]:
     llm = get_llm()
-    catalog = json.dumps([t.schema() for t in TOOLS.values()])
+    catalog = [{"name": t.name, "description": t.description} for t in MANIFEST.values()]
     raw = llm.complete(
-        f"Pick a tool and JSON args for: {question}\nAvailable tools: {catalog}\n"
-        "Respond as JSON: {\"tool\": \"name\", \"args\": {{}}}"
+        f"Question: {question}\nSelect tool from manifest: {json.dumps(catalog)}",
+        system='Return JSON {"tool":"...","args":{...}}',
     )
-    start, end = raw.find("{"), raw.rfind("}")
-    if start >= 0:
-        payload = json.loads(raw[start : end + 1])
-        tool = payload.get("tool", "search")
-        return tool, payload.get("args", {})
-    if any(op in question for op in "+-*/"):
-        expr = question.split("?", 1)[0]
-        for prefix in ("What is ", "Calculate "):
-            expr = expr.replace(prefix, "")
-        return "calculator", {"expression": expr.strip()}
-    return "search", {"query": question}
+    payload = extract_json(raw)
+    return payload.get("tool", "timezone_lookup"), payload.get("args", {})
 
 
-def run_with_tools(question: str) -> str:
-    tool_name, args = choose_tool(question)
-    tool = TOOLS.get(tool_name, TOOLS["search"])
-    result = tool.fn(**args) if args else tool.fn(question)
+def answer_with_tools(question: str) -> str:
+    tool_name, args = pick_tool(question)
+    tool = MANIFEST.get(tool_name, MANIFEST["timezone_lookup"])
+    observation = tool.invoke(args)
     llm = get_llm()
-    return llm.complete(f"Question: {question}\nTool result: {result}\nWrite the final answer.")
+    return llm.complete(
+        f"Question: {question}\nTool output: {observation}\nWrite a concise answer."
+    )
 
 
 if __name__ == "__main__":
-    print(run_with_tools("What is 12 * (4 + 3) ?"))
+    print(answer_with_tools("What time is it in Tokyo right now?"))
+    print(answer_with_tools("Convert 100 USD to JPY for my trip."))

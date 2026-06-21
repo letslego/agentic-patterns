@@ -1,4 +1,4 @@
-"""Pattern 21: Exploration and Discovery — generate and test hypotheses."""
+"""Pattern 21: Exploration and Discovery — hypothesis tournament."""
 
 from __future__ import annotations
 
@@ -8,48 +8,40 @@ from agentic_patterns.common import get_llm
 
 
 @dataclass
-class Hypothesis:
-    statement: str
-    evidence: str
-    confidence: float
+class Candidate:
+    claim: str
+    evidence: str = ""
+    confidence: float = 0.0
 
 
-def propose_hypotheses(problem: str, *, n: int = 3) -> list[Hypothesis]:
+def brainstorm(problem: str, n: int = 3) -> list[Candidate]:
     llm = get_llm()
-    raw = llm.complete(
-        f"Propose {n} hypotheses for: {problem}. Number each hypothesis.",
-        system="Be concise.",
-    )
-    lines = [line.strip(" 1234567890.)") for line in raw.splitlines() if line.strip()]
-    return [Hypothesis(statement=line, evidence="", confidence=0.5) for line in lines[:n]]
+    raw = llm.complete(f"List {n} hypotheses for: {problem}", system="Number each line.")
+    lines = [ln.strip(" 1234567890.)") for ln in raw.splitlines() if ln.strip()]
+    return [Candidate(claim=line) for line in lines[:n]]
 
 
-def explore(problem: str) -> Hypothesis | None:
-    candidates = propose_hypotheses(problem)
+def tournament(problem: str) -> Candidate | None:
     llm = get_llm()
-    best: Hypothesis | None = None
-    for candidate in candidates:
-        evidence = llm.complete(
-            f"Gather supporting/contradicting evidence for hypothesis: {candidate.statement}"
-        )
+    winner: Candidate | None = None
+    for cand in brainstorm(problem):
+        cand.evidence = llm.complete(f"Collect evidence for hypothesis: {cand.claim}")
         score_raw = llm.complete(
-            f"Score confidence 0-1 for hypothesis given evidence.\n"
-            f"Hypothesis: {candidate.statement}\nEvidence: {evidence}\nNumber only."
+            f"Score confidence 0..1 for hypothesis given evidence.\n"
+            f"H: {cand.claim}\nE: {cand.evidence}\nNumber only."
         )
         try:
-            confidence = float(score_raw.strip().split()[0])
+            cand.confidence = float(score_raw.strip().split()[0])
         except ValueError:
-            confidence = 0.5
-        candidate.evidence = evidence
-        candidate.confidence = max(0.0, min(confidence, 1.0))
-        if best is None or candidate.confidence > best.confidence:
-            best = candidate
-    return best
+            cand.confidence = 0.5
+        if winner is None or cand.confidence > winner.confidence:
+            winner = cand
+    return winner
 
 
 if __name__ == "__main__":
-    winner = explore("Why did support ticket volume spike last week?")
-    if winner:
-        print(winner.statement)
-        print(f"confidence={winner.confidence}")
-        print(winner.evidence[:200])
+    best = tournament("Why did API latency spike after Tuesday deploy?")
+    if best:
+        print(best.claim)
+        print(f"confidence={best.confidence:.2f}")
+        print(best.evidence[:180])

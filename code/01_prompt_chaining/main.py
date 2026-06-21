@@ -1,34 +1,50 @@
-"""Pattern 01: Prompt Chaining — sequential LLM pipeline."""
+"""Pattern 01: Prompt Chaining — recipe text to structured shopping list."""
 
 from __future__ import annotations
 
 from agentic_patterns.common import get_llm
+from agentic_patterns.kernel import Pipeline, StageContext
 
 
-def extract_specs(text: str) -> str:
-    llm = get_llm()
+def stage_extract(ctx: StageContext, llm) -> str:
+    recipe = ctx.get("recipe_text", "")
     return llm.complete(
-        f"Extract the technical specifications from the following text:\n\n{text}",
-        system="You extract hardware specs only.",
+        f"Extract ingredient lines from this recipe text:\n\n{recipe}",
+        system="Return comma-separated ingredients only.",
     )
 
 
-def to_json(specs: str) -> str:
-    llm = get_llm()
+def stage_normalize(ctx: StageContext, llm) -> str:
+    raw = ctx.get("extract", "")
     return llm.complete(
-        "Transform the following specifications into JSON with keys cpu, memory, storage:\n\n"
-        + specs
+        f"Normalize to canonical units:\n{raw}",
+        system="Use metric weights/volumes.",
     )
 
 
-def run_pipeline(text: str) -> str:
-    specs = extract_specs(text)
-    return to_json(specs)
+def stage_shopping_json(ctx: StageContext, llm) -> str:
+    normalized = ctx.get("normalize", "")
+    return llm.complete(
+        f"Build grocery JSON shopping list from:\n{normalized}",
+        system="Return valid JSON with an items array.",
+    )
+
+
+def recipe_to_shopping_list(recipe_text: str) -> str:
+    pipeline = Pipeline(
+        stages=[
+            ("extract", stage_extract),
+            ("normalize", stage_normalize),
+            ("shopping_json", stage_shopping_json),
+        ]
+    )
+    result = pipeline.run({"recipe_text": recipe_text}, get_llm())
+    return result.get("shopping_json", "")
 
 
 if __name__ == "__main__":
     sample = (
-        "The new laptop features a 3.5 GHz octa-core processor, 16GB RAM, "
-        "and a 1TB NVMe SSD."
+        "Rustic loaf: mix 2 cups flour, 1 tsp yeast, 1 cup warm water, "
+        "and 1 tbsp olive oil. Rest 90 minutes, then bake."
     )
-    print(run_pipeline(sample))
+    print(recipe_to_shopping_list(sample))

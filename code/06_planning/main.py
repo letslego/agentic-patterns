@@ -1,4 +1,4 @@
-"""Pattern 06: Planning — decompose goals into executable steps."""
+"""Pattern 06: Planning — database migration milestone tracker."""
 
 from __future__ import annotations
 
@@ -8,38 +8,37 @@ from agentic_patterns.common import get_llm
 
 
 @dataclass
-class PlanStep:
-    id: int
-    description: str
-    status: str = "pending"
+class Milestone:
+    order: int
+    title: str
+    done: bool = False
 
 
-def create_plan(goal: str) -> list[PlanStep]:
+def build_migration_plan(scope: str) -> list[Milestone]:
     llm = get_llm()
     raw = llm.complete(
-        f"Break this goal into 3-5 numbered steps:\n{goal}",
-        system="Return numbered steps only.",
+        f"Create a numbered migration plan for: {scope}",
+        system="Return numbered milestones only.",
     )
-    steps: list[PlanStep] = []
+    milestones: list[Milestone] = []
     for line in raw.splitlines():
         line = line.strip()
-        if not line:
+        if not line or not line[0].isdigit():
             continue
-        if line[0].isdigit():
-            desc = line.split(maxsplit=1)[-1].lstrip(".) ")
-            steps.append(PlanStep(id=len(steps) + 1, description=desc))
-    return steps or [PlanStep(1, raw)]
+        title = line.split(maxsplit=1)[-1].lstrip(".) ")
+        milestones.append(Milestone(order=len(milestones) + 1, title=title))
+    return milestones or [Milestone(1, raw)]
 
 
-def execute_plan(steps: list[PlanStep]) -> list[PlanStep]:
+def execute_milestones(steps: list[Milestone]) -> list[Milestone]:
     llm = get_llm()
     for step in steps:
-        llm.complete(f"Execute plan step: {step.description}")
-        step.status = "done"
+        llm.complete(f"Describe validation checks for migration step: {step.title}")
+        step.done = True
     return steps
 
 
 if __name__ == "__main__":
-    plan = create_plan("Ship a RAG-powered support bot in two weeks")
-    for step in execute_plan(plan):
-        print(f"[{step.status}] {step.id}. {step.description}")
+    plan = build_migration_plan("Move orders DB from Postgres 12 to 16")
+    for step in execute_milestones(plan):
+        print(f"[{'x' if step.done else ' '}] {step.order}. {step.title}")

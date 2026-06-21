@@ -110,7 +110,7 @@ Break complex tasks into a linear sequence of focused LLM calls. Each step consu
 
 **Source:** [`code/01_prompt_chaining/main.py`](https://github.com/letslego/agentic-patterns/blob/main/code/01_prompt_chaining/main.py)
 
-Split extraction and transformation into two explicit functions: `extract_specs()` then `to_json()`.
+Split ingredient extraction, unit normalization, and shopping-list JSON into three pipeline stages using `Pipeline` + `StageContext` (not LangChain LCEL).
 
 ### Run locally
 
@@ -149,7 +149,7 @@ Classify incoming requests and dispatch them to specialized handlers or sub-agen
 
 **Source:** [`code/02_routing/main.py`](https://github.com/letslego/agentic-patterns/blob/main/code/02_routing/main.py)
 
-A router LLM returns a label; `ROUTES` maps labels to handler callables.
+IT helpdesk router maps tickets to `password_reset`, `software_install`, or `general_support` handlers via `agentic_patterns.kernel.Router`.
 
 ### Run locally
 

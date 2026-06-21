@@ -1,42 +1,36 @@
-"""Pattern 03: Parallelization — run independent subtasks concurrently."""
+"""Pattern 03: Parallelization — concurrent survey theme extraction."""
 
 from __future__ import annotations
 
-from concurrent.futures import Future, ThreadPoolExecutor, as_completed
-from typing import Iterable
+import asyncio
 
 from agentic_patterns.common import get_llm
 
 
-def analyze_chunk(chunk: str) -> str:
+async def theme_from_comment(comment: str) -> str:
     llm = get_llm()
-    return llm.complete(f"Summarize this section in one sentence:\n\n{chunk}")
+    return llm.complete(f"Summarize this survey comment into one theme:\n{comment}")
 
 
-def parallel_summarize(chunks: Iterable[str], *, max_workers: int = 4) -> list[str]:
-    chunks = list(chunks)
-    results: list[str | None] = [None] * len(chunks)
-    with ThreadPoolExecutor(max_workers=max_workers) as pool:
-        future_map: dict[Future[str], int] = {
-            pool.submit(analyze_chunk, chunk): idx for idx, chunk in enumerate(chunks)
-        }
-        for future in as_completed(future_map):
-            idx = future_map[future]
-            results[idx] = future.result()
-    return [r or "" for r in results]
+async def parallel_survey_themes(comments: list[str]) -> list[str]:
+    return await asyncio.gather(*(theme_from_comment(c) for c in comments))
 
 
-def merge_summaries(parts: list[str]) -> str:
+def synthesize(themes: list[str]) -> str:
     llm = get_llm()
-    joined = "\n".join(f"- {p}" for p in parts)
-    return llm.complete(f"Merge these bullet summaries into a cohesive paragraph:\n{joined}")
+    joined = "\n".join(f"- {t}" for t in themes)
+    return llm.complete(f"Merge themes from survey responses:\n{joined}")
+
+
+async def run(comments: list[str]) -> str:
+    themes = await parallel_survey_themes(comments)
+    return synthesize(themes)
 
 
 if __name__ == "__main__":
-    sections = [
-        "Section A discusses onboarding flows.",
-        "Section B covers billing integrations.",
-        "Section C explains observability dashboards.",
+    samples = [
+        "Setup wizard skipped DNS step and I was confused.",
+        "Invoice labels don't match our PO numbers.",
+        "Love the dashboard, but export CSV failed once.",
     ]
-    partial = parallel_summarize(sections)
-    print(merge_summaries(partial))
+    print(asyncio.run(run(samples)))

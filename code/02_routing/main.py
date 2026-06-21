@@ -1,43 +1,34 @@
-"""Pattern 02: Routing — classify requests and dispatch to specialists."""
+"""Pattern 02: Routing — IT helpdesk intent dispatch."""
 
 from __future__ import annotations
 
-from dataclasses import dataclass
-from typing import Callable
-
 from agentic_patterns.common import get_llm
+from agentic_patterns.kernel import Router
 
 
-@dataclass
-class Route:
-    name: str
-    handler: Callable[[str], str]
+def handle_password_reset(ticket: str) -> str:
+    return f"[PasswordReset] Sent MFA reset link for: {ticket}"
 
 
-ROUTES: dict[str, Route] = {
-    "billing": Route("billing", lambda q: f"[Billing] Process refund for: {q}"),
-    "engineering": Route("engineering", lambda q: f"[Engineering] Triage bug: {q}"),
-    "general": Route("general", lambda q: f"[General] Answer: {q}"),
-}
+def handle_software_install(ticket: str) -> str:
+    return f"[SoftwareInstall] Queued package deployment for: {ticket}"
 
 
-def classify(query: str) -> str:
-    llm = get_llm()
-    label = llm.complete(
-        f"Classify this customer message into billing, engineering, or general:\n\n{query}",
-        system="Reply with a single route label only.",
-    ).strip().lower()
-    for key in ROUTES:
-        if key in label:
-            return key
-    return "general"
+def handle_general_support(ticket: str) -> str:
+    return f"[GeneralSupport] Created follow-up task for: {ticket}"
 
 
-def route(query: str) -> str:
-    route_name = classify(query)
-    return ROUTES[route_name].handler(query)
+helpdesk_router = Router(
+    routes={
+        "password_reset": handle_password_reset,
+        "software_install": handle_software_install,
+        "general_support": handle_general_support,
+    },
+    default="general_support",
+    system="Reply with exactly one route label.",
+)
 
 
 if __name__ == "__main__":
-    print(route("I was charged twice and need a refund."))
-    print(route("The app crashes when I export a PDF."))
+    print(helpdesk_router.dispatch("I'm locked out after password expiry."))
+    print(helpdesk_router.dispatch("Please install Figma on my laptop."))
