@@ -59,3 +59,5 @@ python code/01_prompt_chaining/main.py
 ## Repository
 
 All code lives at [github.com/letslego/agentic-patterns](https://github.com/letslego/agentic-patterns).
+
+**Live site:** [letslego.github.io/agentic-patterns](https://letslego.github.io/agentic-patterns/)
