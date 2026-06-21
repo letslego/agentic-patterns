@@ -9,7 +9,10 @@ export default defineConfig({
   base: `/${repo}/`,
   lang: 'en-US',
   cleanUrls: true,
-  head: [['link', { rel: 'icon', href: `${`/${repo}/`}favicon.svg` }]],
+  head: [
+    ['link', { rel: 'icon', href: `/${repo}/favicon.svg` }],
+    ['meta', { name: 'robots', content: 'index,follow' }],
+  ],
   themeConfig: {
     logo: '/favicon.svg',
     nav: [
@@ -84,7 +87,7 @@ export default defineConfig({
       text: 'Edit this page on GitHub',
     },
     footer: {
-      message: 'Open-source guide and reference code for agentic design patterns.',
+      message: 'Independent open-source guide for building AI agent systems.',
       copyright: 'MIT License',
     },
     search: { provider: 'local' },

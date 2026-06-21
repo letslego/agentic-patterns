@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Concatenate chapter markdown into a single companion document."""
+"""Concatenate chapter markdown into a single guide document."""
 
 from pathlib import Path
 
@@ -12,9 +12,10 @@ PARTS = [
     *sorted((ROOT / "part-3-production").glob("*.md")),
     *sorted((ROOT / "part-4-multi-agent").glob("*.md")),
     ROOT / "appendix" / "frameworks.md",
+    ROOT / "appendix" / "framework-adapters.md",
 ]
 
-out = ROOT.parent / "AGENTIC-PATTERNS-COMPANION.md"
+out = ROOT.parent / "AGENTIC-PATTERNS-GUIDE.md"
 chunks = []
 for path in PARTS:
     chunks.append(f"<!-- source: {path.relative_to(ROOT.parent)} -->\n")

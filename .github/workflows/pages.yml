@@ -25,6 +25,11 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run docs:build
+      - name: Verify site output has no blocked references
+        run: |
+          rg -i "gulli|antonio gull|springer|hands-on guide to building intelligent|cdn-website.com.*agentic" docs/.vitepress/dist \
+            && { echo "Blocked reference found in site build"; exit 1; } \
+            || echo "Site output clean"
       - uses: actions/upload-pages-artifact@v3
         with:
           path: docs/.vitepress/dist
