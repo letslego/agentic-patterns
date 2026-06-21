@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 240" role="img" aria-label="Routing pattern">
+  <rect width="720" height="240" fill="#0f172a"/>
+  <text x="360" y="28" fill="#e2e8f0" font-family="system-ui,sans-serif" font-size="16" text-anchor="middle">Routing Pattern</text>
+  <rect x="300" y="48" width="120" height="44" rx="10" fill="#334155" stroke="#94a3b8"/>
+  <text x="360" y="76" fill="#f8fafc" font-family="system-ui,sans-serif" font-size="13" text-anchor="middle">User Query</text>
+  <line x1="360" y1="92" x2="360" y2="112" stroke="#64748b" stroke-width="2"/>
+  <rect x="280" y="112" width="160" height="44" rx="10" fill="#2563eb"/>
+  <text x="360" y="140" fill="#fff" font-family="system-ui,sans-serif" font-size="13" text-anchor="middle">Router / Classifier</text>
+  <line x1="300" y1="156" x2="120" y2="186" stroke="#64748b" stroke-width="2"/>
+  <line x1="360" y1="156" x2="360" y2="186" stroke="#64748b" stroke-width="2"/>
+  <line x1="420" y1="156" x2="600" y2="186" stroke="#64748b" stroke-width="2"/>
+  <rect x="40" y="186" width="160" height="44" rx="10" fill="#14532d" stroke="#22c55e"/>
+  <text x="120" y="214" fill="#dcfce7" font-family="system-ui,sans-serif" font-size="12" text-anchor="middle">Billing Agent</text>
+  <rect x="280" y="186" width="160" height="44" rx="10" fill="#1e3a8a" stroke="#60a5fa"/>
+  <text x="360" y="214" fill="#dbeafe" font-family="system-ui,sans-serif" font-size="12" text-anchor="middle">Engineering Agent</text>
+  <rect x="520" y="186" width="160" height="44" rx="10" fill="#581c87" stroke="#c084fc"/>
+  <text x="600" y="214" fill="#f3e8ff" font-family="system-ui,sans-serif" font-size="12" text-anchor="middle">General Agent</text>
+</svg>

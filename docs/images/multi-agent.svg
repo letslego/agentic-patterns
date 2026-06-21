@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 220" role="img" aria-label="Multi-agent collaboration">
+  <rect width="720" height="220" fill="#0f172a"/>
+  <text x="360" y="28" fill="#e2e8f0" font-family="system-ui,sans-serif" font-size="16" text-anchor="middle">Multi-Agent Collaboration</text>
+  <rect x="280" y="52" width="160" height="48" rx="10" fill="#2563eb"/>
+  <text x="360" y="82" fill="#fff" font-family="system-ui,sans-serif" font-size="13" text-anchor="middle">Coordinator</text>
+  <line x1="360" y1="100" x2="140" y2="140" stroke="#64748b" stroke-width="2"/>
+  <line x1="360" y1="100" x2="360" y2="140" stroke="#64748b" stroke-width="2"/>
+  <line x1="360" y1="100" x2="580" y2="140" stroke="#64748b" stroke-width="2"/>
+  <rect x="60" y="140" width="160" height="48" rx="10" fill="#1e293b" stroke="#38bdf8"/>
+  <text x="140" y="170" fill="#bae6fd" font-family="system-ui,sans-serif" font-size="12" text-anchor="middle">Researcher</text>
+  <rect x="280" y="140" width="160" height="48" rx="10" fill="#1e293b" stroke="#a78bfa"/>
+  <text x="360" y="170" fill="#ddd6fe" font-family="system-ui,sans-serif" font-size="12" text-anchor="middle">Planner</text>
+  <rect x="500" y="140" width="160" height="48" rx="10" fill="#1e293b" stroke="#fbbf24"/>
+  <text x="580" y="170" fill="#fef3c7" font-family="system-ui,sans-serif" font-size="12" text-anchor="middle">Writer</text>
+  <path d="M140 188 Q360 210 580 188" fill="none" stroke="#475569" stroke-width="2" stroke-dasharray="6 4"/>
+  <text x="360" y="208" fill="#94a3b8" font-family="system-ui,sans-serif" font-size="11" text-anchor="middle">Shared context flows back to coordinator</text>
+</svg>

@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 200" role="img" aria-label="Prompt chaining pipeline">
+  <defs>
+    <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#2563eb"/>
+      <stop offset="100%" stop-color="#7c3aed"/>
+    </linearGradient>
+  </defs>
+  <rect width="720" height="200" fill="#0f172a"/>
+  <text x="360" y="28" fill="#e2e8f0" font-family="system-ui,sans-serif" font-size="16" text-anchor="middle">Prompt Chaining Pipeline</text>
+  <rect x="24" y="70" width="120" height="56" rx="10" fill="#1e293b" stroke="#64748b"/>
+  <text x="84" y="104" fill="#f8fafc" font-family="system-ui,sans-serif" font-size="13" text-anchor="middle">Input</text>
+  <polygon points="160,98 190,98 190,88 210,98 190,108 190,98" fill="#94a3b8"/>
+  <rect x="220" y="70" width="120" height="56" rx="10" fill="url(#g1)"/>
+  <text x="280" y="98" fill="#fff" font-family="system-ui,sans-serif" font-size="12" text-anchor="middle">Step 1</text>
+  <text x="280" y="114" fill="#dbeafe" font-family="system-ui,sans-serif" font-size="11" text-anchor="middle">Extract</text>
+  <polygon points="356,98 386,98 386,88 406,98 386,108 386,98" fill="#94a3b8"/>
+  <rect x="416" y="70" width="120" height="56" rx="10" fill="url(#g1)"/>
+  <text x="476" y="98" fill="#fff" font-family="system-ui,sans-serif" font-size="12" text-anchor="middle">Step 2</text>
+  <text x="476" y="114" fill="#dbeafe" font-family="system-ui,sans-serif" font-size="11" text-anchor="middle">Transform</text>
+  <polygon points="552,98 582,98 582,88 602,98 582,108 582,98" fill="#94a3b8"/>
+  <rect x="612" y="70" width="84" height="56" rx="10" fill="#1e293b" stroke="#22c55e" stroke-width="2"/>
+  <text x="654" y="104" fill="#bbf7d0" font-family="system-ui,sans-serif" font-size="13" text-anchor="middle">Output</text>
+  <text x="360" y="170" fill="#94a3b8" font-family="system-ui,sans-serif" font-size="12" text-anchor="middle">Each step consumes the previous step's output as context</text>
+</svg>

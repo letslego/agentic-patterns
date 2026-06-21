@@ -1,0 +1,6 @@
+# Core (mock client works without extras)
+# Optional real LLM providers:
+openai>=1.40.0
+# Optional frameworks referenced in docs:
+# langchain>=0.3.0
+# langgraph>=0.2.0
