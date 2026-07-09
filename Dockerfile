@@ -26,6 +26,9 @@ COPY --from=builder /app /app
 ENV PORT=8080
 ENV CHAT_DATA_DIR=/data/chat
 
+COPY scripts/docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
 EXPOSE 8080
 
-CMD ["uvicorn", "chat.main:app", "--host", "0.0.0.0", "--port", "8080"]
+ENTRYPOINT ["docker-entrypoint.sh"]
