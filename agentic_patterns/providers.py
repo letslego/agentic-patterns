@@ -27,3 +27,28 @@ class OpenAIClient(LLMClient):
         messages.append({"role": "user", "content": prompt})
         response = self._client.chat.completions.create(model=self._model, messages=messages)
         return response.choices[0].message.content or ""
+
+
+class NemotronClient(LLMClient):
+    """NVIDIA Nemotron via NIM OpenAI-compatible API."""
+
+    def __init__(self, model: str | None = None) -> None:
+        try:
+            from openai import OpenAI
+        except ImportError as exc:
+            raise RuntimeError("Install openai: pip install openai") from exc
+
+        api_key = os.environ.get("NVIDIA_API_KEY")
+        if not api_key:
+            raise RuntimeError("Set NVIDIA_API_KEY to use Nemotron provider")
+        base_url = os.getenv("NVIDIA_BASE_URL", "https://integrate.api.nvidia.com/v1")
+        self._client = OpenAI(api_key=api_key, base_url=base_url)
+        self._model = model or os.getenv("NEMOTRON_MODEL", "nvidia/llama-3.1-nemotron-70b-instruct")
+
+    def complete(self, prompt: str, *, system: str | None = None) -> str:
+        messages = []
+        if system:
+            messages.append({"role": "system", "content": system})
+        messages.append({"role": "user", "content": prompt})
+        response = self._client.chat.completions.create(model=self._model, messages=messages, temperature=0.3)
+        return response.choices[0].message.content or ""
