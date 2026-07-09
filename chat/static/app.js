@@ -151,6 +151,9 @@ composer.addEventListener("submit", async (e) => {
         for (const line of chunk.split("\n")) {
           if (!line.startsWith("data: ")) continue;
           const payload = JSON.parse(line.slice(6));
+          if (payload.error) {
+            throw new Error(payload.error);
+          }
           if (payload.token) {
             full += payload.token;
             assistantContent.innerHTML = renderMarkdown(full);

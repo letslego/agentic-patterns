@@ -100,10 +100,18 @@ def create_app() -> FastAPI:
                     return {"message": result, "sources": sources}
 
                 def event_stream() -> Iterator[str]:
-                    for token in result:
-                        payload = json.dumps({"token": token})
+                    try:
+                        for token in result:
+                            payload = json.dumps({"token": token})
+                            yield f"data: {payload}\n\n"
+                        yield f"data: {json.dumps({'done': True, 'sources': sources})}\n\n"
+                    except Exception as exc:
+                        payload = json.dumps(
+                            {
+                                "error": f"LLM request failed ({llm.provider}/{llm.model_name}): {exc}"
+                            }
+                        )
                         yield f"data: {payload}\n\n"
-                    yield f"data: {json.dumps({'done': True, 'sources': sources})}\n\n"
 
                 return StreamingResponse(event_stream(), media_type="text/event-stream")
 
