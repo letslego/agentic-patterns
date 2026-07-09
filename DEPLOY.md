@@ -1,13 +1,13 @@
 # Deploying Agentic Patterns Chat on Fly.io
 
-The chat app uses **NVIDIA Nemotron** (via NIM) for completions and a SQLite-backed vector store for RAG.
+The chat app uses **OpenRouter** (preferred) for chat completions and a SQLite-backed vector store for RAG.
 
 ## Architecture
 
 ```
 Browser → FastAPI (chat/main.py)
             ├─ GET  /api/health, /api/patterns
-            ├─ POST /api/chat  (RAG + Nemotron)
+            ├─ POST /api/chat  (RAG + OpenRouter)
             └─ static UI (chat/static/)
          SQLite vector store (/data/chat on Fly volume)
          Embeddings: OpenAI text-embedding-3-small OR local sentence-transformers
@@ -16,7 +16,7 @@ Browser → FastAPI (chat/main.py)
 ## Prerequisites
 
 - [Fly CLI](https://fly.io/docs/hands-on/install-flyctl/) installed and authenticated
-- NVIDIA API key with NIM access ([build.nvidia.com](https://build.nvidia.com))
+- OpenRouter API key ([openrouter.ai](https://openrouter.ai))
 - Optional: OpenAI API key for higher-quality embeddings at ingest time
 
 ## First-time setup
@@ -28,14 +28,14 @@ fly apps create agentic-patterns-chat   # or pick another name and update fly.to
 # Persistent volume for RAG database (re-ingest on deploy updates the baked index)
 fly volumes create chat_data --region iad --size 1
 
-# Required: Nemotron chat completions
-fly secrets set NVIDIA_API_KEY=nvapi-...
+# Required: OpenRouter chat completions
+fly secrets set OPENROUTER_API_KEY=sk-or-...
 
 # Optional: better embeddings (otherwise image uses local sentence-transformers)
 fly secrets set OPENAI_API_KEY=sk-...
 
 # Optional overrides
-fly secrets set NEMOTRON_MODEL=nvidia/llama-3.1-nemotron-70b-instruct
+fly secrets set OPENROUTER_MODEL=nvidia/llama-3.1-nemotron-70b-instruct
 ```
 
 ## Deploy
@@ -54,15 +54,18 @@ fly open
 
 | Variable | Required | Default | Purpose |
 |----------|----------|---------|---------|
-| `NVIDIA_API_KEY` | Yes (prod) | — | Nemotron chat via NVIDIA NIM |
-| `NEMOTRON_MODEL` | No | `nvidia/llama-3.1-nemotron-70b-instruct` | Chat model |
-| `NVIDIA_BASE_URL` | No | `https://integrate.api.nvidia.com/v1` | NIM OpenAI-compatible endpoint |
+| `OPENROUTER_API_KEY` | Yes (prod) | — | Chat completions via OpenRouter |
+| `OPENROUTER_MODEL` | No | `nvidia/llama-3.1-nemotron-70b-instruct` | Chat model on OpenRouter |
+| `OPENROUTER_BASE_URL` | No | `https://openrouter.ai/api/v1` | OpenRouter OpenAI-compatible endpoint |
+| `NVIDIA_API_KEY` | No | — | Fallback: Nemotron via NVIDIA NIM (if no OpenRouter key) |
+| `NEMOTRON_MODEL` | No | `nvidia/llama-3.1-nemotron-70b-instruct` | NVIDIA fallback chat model |
+| `NVIDIA_BASE_URL` | No | `https://integrate.api.nvidia.com/v1` | NVIDIA NIM endpoint |
 | `OPENAI_API_KEY` | No | — | Embeddings (`text-embedding-3-small`) |
 | `OPENAI_EMBEDDING_MODEL` | No | `text-embedding-3-small` | Embedding model name |
 | `CHAT_DATA_DIR` | No | `data/chat` (local) / `/data/chat` (Fly) | Vector store directory |
 | `PORT` | No | `8080` | HTTP port |
 
-Without `NVIDIA_API_KEY`, the API runs in **mock mode** (returns retrieved chunks + template text).
+Without `OPENROUTER_API_KEY` or `NVIDIA_API_KEY`, the API runs in **mock mode** (returns retrieved chunks + template text).
 
 ## Re-ingest on the volume
 
@@ -87,7 +90,7 @@ Expected:
 {
   "status": "ok",
   "chunks": 120,
-  "llm_provider": "nemotron",
+  "llm_provider": "openrouter",
   "llm_model": "nvidia/llama-3.1-nemotron-70b-instruct",
   "mock_mode": false
 }
@@ -97,6 +100,6 @@ Expected:
 
 ```bash
 docker build -t agentic-patterns-chat .
-docker run --rm -p 8080:8080 -e NVIDIA_API_KEY=$NVIDIA_API_KEY agentic-patterns-chat
+docker run --rm -p 8080:8080 -e OPENROUTER_API_KEY=$OPENROUTER_API_KEY agentic-patterns-chat
 curl http://localhost:8080/api/health
 ```

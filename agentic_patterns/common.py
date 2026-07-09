@@ -115,6 +115,10 @@ def get_llm() -> LLMClient:
         from agentic_patterns.providers import OpenAIClient
 
         return OpenAIClient()
+    if provider == "openrouter":
+        from agentic_patterns.providers import OpenRouterClient
+
+        return OpenRouterClient()
     if provider in ("nemotron", "nvidia"):
         from agentic_patterns.providers import NemotronClient
 

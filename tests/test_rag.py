@@ -11,8 +11,11 @@ def test_ingest_creates_chunks(tmp_path, monkeypatch):
     monkeypatch.setenv("CHAT_DATA_DIR", str(tmp_path))
     monkeypatch.delenv("OPENAI_API_KEY", raising=False)
 
+    from chat.embeddings import HashEmbedder
     from chat.ingest import ingest
     from chat.rag import get_store
+
+    monkeypatch.setattr("chat.ingest.get_embedder", lambda: HashEmbedder())
 
     count = ingest(root=ROOT)
     store = get_store()
