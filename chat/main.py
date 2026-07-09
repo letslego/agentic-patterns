@@ -20,7 +20,7 @@ from chat.rag import get_store
 
 STATIC_DIR = Path(__file__).parent / "static"
 
-SYSTEM_PROMPT = """You are an expert on the 21 agentic design patterns from the agentic-patterns repository.
+SYSTEM_PROMPT_HEAD = """You are an expert on the 21 agentic design patterns from the agentic-patterns repository.
 
 Rules:
 - Always cite pattern numbers and names when relevant (e.g. "Pattern 03: Parallelization").
@@ -30,8 +30,9 @@ Rules:
 - If retrieved context is insufficient, say so and suggest which pattern chapter to read.
 
 Retrieved context from the repository:
-{context}
 """
+
+SYSTEM_PROMPT_TAIL = ""
 
 
 class ChatMessage(BaseModel):
@@ -83,7 +84,7 @@ def create_app() -> FastAPI:
 
         query = user_messages[-1].content
         context, sources = _retrieve_context(query, pattern_number=req.pattern_number, top_k=req.top_k)
-        system = SYSTEM_PROMPT.format(context=context or "_No chunks retrieved._")
+        system = _build_system_prompt(context)
 
         llm_messages: list[dict[str, str]] = [{"role": "system", "content": system}]
         for msg in req.messages:
@@ -92,23 +93,29 @@ def create_app() -> FastAPI:
 
         llm = get_chat_llm()
 
-        if req.stream:
-            result = llm.chat(llm_messages, stream=True)
-            if isinstance(result, str):
-                return {"message": result, "sources": sources}
+        try:
+            if req.stream:
+                result = llm.chat(llm_messages, stream=True)
+                if isinstance(result, str):
+                    return {"message": result, "sources": sources}
 
-            def event_stream() -> Iterator[str]:
-                for token in result:
-                    payload = json.dumps({"token": token})
-                    yield f"data: {payload}\n\n"
-                yield f"data: {json.dumps({'done': True, 'sources': sources})}\n\n"
+                def event_stream() -> Iterator[str]:
+                    for token in result:
+                        payload = json.dumps({"token": token})
+                        yield f"data: {payload}\n\n"
+                    yield f"data: {json.dumps({'done': True, 'sources': sources})}\n\n"
 
-            return StreamingResponse(event_stream(), media_type="text/event-stream")
+                return StreamingResponse(event_stream(), media_type="text/event-stream")
 
-        answer = llm.chat(llm_messages, stream=False)
-        if not isinstance(answer, str):
-            answer = "".join(answer)
-        return {"message": answer, "sources": sources}
+            answer = llm.chat(llm_messages, stream=False)
+            if not isinstance(answer, str):
+                answer = "".join(answer)
+            return {"message": answer, "sources": sources}
+        except Exception as exc:
+            raise HTTPException(
+                status_code=502,
+                detail=f"LLM request failed ({llm.provider}/{llm.model_name}): {exc}",
+            ) from exc
 
     if STATIC_DIR.is_dir():
         app.mount("/assets", StaticFiles(directory=STATIC_DIR), name="assets")
@@ -118,6 +125,11 @@ def create_app() -> FastAPI:
             return FileResponse(STATIC_DIR / "index.html")
 
     return app
+
+
+def _build_system_prompt(context: str) -> str:
+    """Join prompt parts without str.format so code chunks can contain braces."""
+    return SYSTEM_PROMPT_HEAD + (context or "_No chunks retrieved._") + SYSTEM_PROMPT_TAIL
 
 
 def _retrieve_context(

@@ -6,10 +6,10 @@ import os
 from abc import ABC, abstractmethod
 from typing import Iterator
 
-DEFAULT_OPENROUTER_MODEL = "nvidia/llama-3.1-nemotron-70b-instruct"
+DEFAULT_OPENROUTER_MODEL = "nvidia/llama-3.3-nemotron-super-49b-v1"
 DEFAULT_OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1"
 
-DEFAULT_NEMOTRON_MODEL = "nvidia/llama-3.1-nemotron-70b-instruct"
+DEFAULT_NEMOTRON_MODEL = "nvidia/llama-3.3-nemotron-super-49b-v1"
 DEFAULT_NIM_BASE_URL = "https://integrate.api.nvidia.com/v1"
 
 

@@ -80,3 +80,11 @@ def test_chat_mock_mode(chat_client):
     data = res.json()
     assert "message" in data
     assert "Mock mode" in data["message"] or "pattern" in data["message"].lower()
+
+
+def test_system_prompt_handles_code_braces(chat_client):
+    from chat.main import _build_system_prompt
+
+    prompt = _build_system_prompt('def f():\n    return {"recipe_text": recipe_text}')
+    assert '{"recipe_text": recipe_text}' in prompt
+    assert "Retrieved context from the repository:" in prompt
