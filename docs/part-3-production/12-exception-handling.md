@@ -4,6 +4,9 @@
 
 Retry transient failures and provide graceful fallbacks.
 
+![Exception handling diagram](../images/exception-handling.svg)
+
+
 ## Reference implementation
 
 **Source:** [`code/12_exception_handling/main.py`](https://github.com/letslego/agentic-patterns/blob/main/code/12_exception_handling/main.py)

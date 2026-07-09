@@ -4,6 +4,9 @@
 
 Exchange structured messages between agents through a pub/sub bus.
 
+![Inter-agent communication diagram](../images/inter-agent-communication.svg)
+
+
 ## Reference implementation
 
 **Source:** [`code/15_inter_agent_communication/main.py`](https://github.com/letslego/agentic-patterns/blob/main/code/15_inter_agent_communication/main.py)

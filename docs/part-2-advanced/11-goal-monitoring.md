@@ -4,6 +4,9 @@
 
 Define measurable targets and track progress during agent execution.
 
+![Goal monitoring diagram](../images/goal-monitoring.svg)
+
+
 ## Reference implementation
 
 **Source:** [`code/11_goal_monitoring/main.py`](https://github.com/letslego/agentic-patterns/blob/main/code/11_goal_monitoring/main.py)

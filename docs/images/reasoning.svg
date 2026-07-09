@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 220" role="img" aria-label="Reasoning pattern">
+  <rect width="720" height="220" fill="#0f172a"/>
+  <text x="360" y="28" fill="#e2e8f0" font-family="system-ui,sans-serif" font-size="16" text-anchor="middle">Reasoning Trace (ReAct-style)</text>
+  <rect x="80" y="55" width="560" height="130" rx="12" fill="#1e293b" stroke="#64748b"/>
+  <text x="110" y="82" fill="#93c5fd" font-family="system-ui,sans-serif" font-size="11">Thought: decompose the question</text>
+  <text x="110" y="102" fill="#fbbf24" font-family="system-ui,sans-serif" font-size="11">Action: call_search("policy docs")</text>
+  <text x="110" y="122" fill="#86efac" font-family="system-ui,sans-serif" font-size="11">Observation: found 3 relevant sections</text>
+  <text x="110" y="142" fill="#93c5fd" font-family="system-ui,sans-serif" font-size="11">Thought: enough evidence to answer</text>
+  <text x="110" y="162" fill="#c084fc" font-family="system-ui,sans-serif" font-size="11">Final Answer: hybrid routing recommended</text>
+  <text x="360" y="205" fill="#94a3b8" font-family="system-ui,sans-serif" font-size="11" text-anchor="middle">Cap steps; log traces for debugging and evaluation</text>
+</svg>

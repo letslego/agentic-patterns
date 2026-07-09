@@ -7,7 +7,7 @@ A code-linked guide to **21 agentic design patterns** for building intelligent s
 
 ## How to use this guide
 
-Each chapter explains one pattern in plain language, includes an **original diagram**, and links to a **runnable reference implementation** in this repository.
+Each chapter explains one pattern in plain language, includes an **original diagram** (22 total across the guide), and links to a **runnable reference implementation** in this repository.
 
 ```bash
 # Example: run Pattern 01 without API keys
@@ -180,6 +180,9 @@ See the [pattern index](../index.md).
 
 Execute independent subtasks concurrently, then merge results.
 
+![Parallelization diagram](../images/parallelization.svg)
+
+
 ## Reference implementation
 
 **Source:** [`code/03_parallelization/main.py`](https://github.com/letslego/agentic-patterns/blob/main/code/03_parallelization/main.py)
@@ -207,6 +210,9 @@ python code/03_parallelization/main.py
 ## Pattern overview
 
 Generate a draft, critique it, and revise in a loop until quality thresholds are met.
+
+![Reflection diagram](../images/reflection.svg)
+
 
 ## Reference implementation
 
@@ -236,6 +242,9 @@ python code/04_reflection/main.py
 
 Let the model choose external tools (APIs, calculators, search) and incorporate results.
 
+![Tool use diagram](../images/tool-use.svg)
+
+
 ## Reference implementation
 
 **Source:** [`code/05_tool_use/main.py`](https://github.com/letslego/agentic-patterns/blob/main/code/05_tool_use/main.py)
@@ -263,6 +272,9 @@ python code/05_tool_use/main.py
 ## Pattern overview
 
 Decompose goals into ordered steps and track execution status.
+
+![Planning diagram](../images/planning.svg)
+
 
 ## Reference implementation
 
@@ -322,6 +334,9 @@ python code/07_multi_agent/main.py
 
 Combine short-term conversation buffer with persistent long-term store.
 
+![Memory management diagram](../images/memory-management.svg)
+
+
 ## Reference implementation
 
 **Source:** [`code/08_memory_management/main.py`](https://github.com/letslego/agentic-patterns/blob/main/code/08_memory_management/main.py)
@@ -349,6 +364,9 @@ python code/08_memory_management/main.py
 ## Pattern overview
 
 Update system behavior from user or evaluator feedback over time.
+
+![Learning and adaptation diagram](../images/learning-adaptation.svg)
+
 
 ## Reference implementation
 
@@ -378,6 +396,9 @@ python code/09_learning_adaptation/main.py
 
 Standardize how agents discover resources and invoke tools via a protocol server.
 
+![MCP diagram](../images/mcp.svg)
+
+
 ## Reference implementation
 
 **Source:** [`code/10_mcp/main.py`](https://github.com/letslego/agentic-patterns/blob/main/code/10_mcp/main.py)
@@ -405,6 +426,9 @@ python code/10_mcp/main.py
 ## Pattern overview
 
 Define measurable targets and track progress during agent execution.
+
+![Goal monitoring diagram](../images/goal-monitoring.svg)
+
 
 ## Reference implementation
 
@@ -434,6 +458,9 @@ python code/11_goal_monitoring/main.py
 
 Retry transient failures and provide graceful fallbacks.
 
+![Exception handling diagram](../images/exception-handling.svg)
+
+
 ## Reference implementation
 
 **Source:** [`code/12_exception_handling/main.py`](https://github.com/letslego/agentic-patterns/blob/main/code/12_exception_handling/main.py)
@@ -461,6 +488,9 @@ python code/12_exception_handling/main.py
 ## Pattern overview
 
 Require human approval before high-impact or irreversible actions.
+
+![Human-in-the-loop diagram](../images/human-in-the-loop.svg)
+
 
 ## Reference implementation
 
@@ -520,6 +550,9 @@ python code/14_rag/main.py
 
 Exchange structured messages between agents through a pub/sub bus.
 
+![Inter-agent communication diagram](../images/inter-agent-communication.svg)
+
+
 ## Reference implementation
 
 **Source:** [`code/15_inter_agent_communication/main.py`](https://github.com/letslego/agentic-patterns/blob/main/code/15_inter_agent_communication/main.py)
@@ -547,6 +580,9 @@ python code/15_inter_agent_communication/main.py
 ## Pattern overview
 
 Select models and strategies based on token, latency, and cost budgets.
+
+![Resource optimization diagram](../images/resource-optimization.svg)
+
 
 ## Reference implementation
 
@@ -576,6 +612,9 @@ python code/16_resource_optimization/main.py
 
 Apply ReAct-style thought/action/observation loops for multi-step reasoning.
 
+![Reasoning diagram](../images/reasoning.svg)
+
+
 ## Reference implementation
 
 **Source:** [`code/17_reasoning/main.py`](https://github.com/letslego/agentic-patterns/blob/main/code/17_reasoning/main.py)
@@ -603,6 +642,9 @@ python code/17_reasoning/main.py
 ## Pattern overview
 
 Validate inputs and outputs against policy before and after generation.
+
+![Guardrails diagram](../images/guardrails.svg)
+
 
 ## Reference implementation
 
@@ -632,6 +674,9 @@ python code/18_guardrails/main.py
 
 Score agent outputs and aggregate quality metrics over time.
 
+![Evaluation diagram](../images/evaluation.svg)
+
+
 ## Reference implementation
 
 **Source:** [`code/19_evaluation/main.py`](https://github.com/letslego/agentic-patterns/blob/main/code/19_evaluation/main.py)
@@ -660,6 +705,9 @@ python code/19_evaluation/main.py
 
 Rank backlog items by urgency and impact to sequence agent work.
 
+![Prioritization diagram](../images/prioritization.svg)
+
+
 ## Reference implementation
 
 **Source:** [`code/20_prioritization/main.py`](https://github.com/letslego/agentic-patterns/blob/main/code/20_prioritization/main.py)
@@ -687,6 +735,9 @@ python code/20_prioritization/main.py
 ## Pattern overview
 
 Generate hypotheses, gather evidence, and select the best explanation.
+
+![Exploration diagram](../images/exploration.svg)
+
 
 ## Reference implementation
 

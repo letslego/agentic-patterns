@@ -4,6 +4,9 @@
 
 Standardize how agents discover resources and invoke tools via a protocol server.
 
+![MCP diagram](../images/mcp.svg)
+
+
 ## Reference implementation
 
 **Source:** [`code/10_mcp/main.py`](https://github.com/letslego/agentic-patterns/blob/main/code/10_mcp/main.py)

@@ -4,6 +4,9 @@
 
 Let the model choose external tools (APIs, calculators, search) and incorporate results.
 
+![Tool use diagram](../images/tool-use.svg)
+
+
 ## Reference implementation
 
 **Source:** [`code/05_tool_use/main.py`](https://github.com/letslego/agentic-patterns/blob/main/code/05_tool_use/main.py)

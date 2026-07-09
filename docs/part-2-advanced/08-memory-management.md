@@ -4,6 +4,9 @@
 
 Combine short-term conversation buffer with persistent long-term store.
 
+![Memory management diagram](../images/memory-management.svg)
+
+
 ## Reference implementation
 
 **Source:** [`code/08_memory_management/main.py`](https://github.com/letslego/agentic-patterns/blob/main/code/08_memory_management/main.py)

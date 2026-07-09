@@ -4,6 +4,9 @@
 
 Decompose goals into ordered steps and track execution status.
 
+![Planning diagram](../images/planning.svg)
+
+
 ## Reference implementation
 
 **Source:** [`code/06_planning/main.py`](https://github.com/letslego/agentic-patterns/blob/main/code/06_planning/main.py)

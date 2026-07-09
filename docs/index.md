@@ -6,7 +6,7 @@ A code-linked guide to **21 agentic design patterns** for building intelligent s
 
 ## How to use this guide
 
-Each chapter explains one pattern in plain language, includes an **original diagram**, and links to a **runnable reference implementation** in this repository.
+Each chapter explains one pattern in plain language, includes an **original diagram** (22 total across the guide), and links to a **runnable reference implementation** in this repository.
 
 ```bash
 # Example: run Pattern 01 without API keys

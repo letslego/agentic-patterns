@@ -4,6 +4,9 @@
 
 Generate a draft, critique it, and revise in a loop until quality thresholds are met.
 
+![Reflection diagram](../images/reflection.svg)
+
+
 ## Reference implementation
 
 **Source:** [`code/04_reflection/main.py`](https://github.com/letslego/agentic-patterns/blob/main/code/04_reflection/main.py)
