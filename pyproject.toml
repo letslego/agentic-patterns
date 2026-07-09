@@ -12,6 +12,12 @@ license = { text = "MIT" }
 
 [project.optional-dependencies]
 openai = ["openai>=1.40.0"]
+chat = [
+  "openai>=1.40.0",
+  "fastapi>=0.115.0",
+  "uvicorn[standard]>=0.30.0",
+]
+chat-ml = ["sentence-transformers>=3.0.0"]
 langchain = ["langchain-core>=0.3.0", "langchain>=0.3.0"]
 langgraph = ["langgraph>=0.2.0", "langchain-core>=0.3.0"]
 frameworks = [
@@ -23,7 +29,11 @@ dev = ["pytest>=8.0", "langchain-core>=0.3.0", "langchain>=0.3.0", "langgraph>=0
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["agentic_patterns*"]
+include = ["agentic_patterns*", "chat*"]
+
+[project.scripts]
+ingest-rag = "chat.ingest:main"
+run-chat = "chat.main:main"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
