@@ -115,6 +115,10 @@ def get_llm() -> LLMClient:
         from agentic_patterns.providers import OpenAIClient
 
         return OpenAIClient()
+    if provider in ("nemotron", "nvidia"):
+        from agentic_patterns.providers import NemotronClient
+
+        return NemotronClient()
     return MockLLMClient()
 
 
