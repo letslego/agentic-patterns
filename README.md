@@ -76,6 +76,42 @@ python examples/langgraph_helpdesk_router.py
 
 See [`docs/appendix/framework-adapters.md`](docs/appendix/framework-adapters.md).
 
+## Pattern chat (RAG + Nemotron)
+
+Interactive chat to learn about all 21 patterns with code recipes. Uses **NVIDIA Nemotron** for completions and RAG over `docs/`, `code/`, and `agentic_patterns/`.
+
+### Run locally
+
+```bash
+pip install -e ".[chat]"
+python -m chat.ingest          # build vector store (local embeddings without OPENAI_API_KEY)
+uvicorn chat.main:app --reload --port 8080
+```
+
+Open http://localhost:8080
+
+### API keys
+
+```bash
+# Chat completions (Nemotron via NVIDIA NIM)
+export NVIDIA_API_KEY=nvapi-...
+export NEMOTRON_MODEL=nvidia/llama-3.1-nemotron-70b-instruct   # optional
+
+# Embeddings (optional — falls back to hash embedder locally, sentence-transformers in Docker)
+export OPENAI_API_KEY=sk-...
+```
+
+Without `NVIDIA_API_KEY`, the app runs in **mock mode** (retrieved context + template answers).
+
+### Deploy to Fly.io
+
+See [`DEPLOY.md`](DEPLOY.md) for full instructions:
+
+```bash
+fly secrets set NVIDIA_API_KEY=nvapi-...
+fly deploy
+```
+
 ## License
 
 MIT — see [LICENSE](LICENSE).
