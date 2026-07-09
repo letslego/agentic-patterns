@@ -76,9 +76,9 @@ python examples/langgraph_helpdesk_router.py
 
 See [`docs/appendix/framework-adapters.md`](docs/appendix/framework-adapters.md).
 
-## Pattern chat (RAG + Nemotron)
+## Pattern chat (RAG + OpenRouter)
 
-Interactive chat to learn about all 21 patterns with code recipes. Uses **NVIDIA Nemotron** for completions and RAG over `docs/`, `code/`, and `agentic_patterns/`.
+Interactive chat to learn about all 21 patterns with code recipes. Uses **OpenRouter** for completions and RAG over `docs/`, `code/`, and `agentic_patterns/`.
 
 ### Run locally
 
@@ -93,22 +93,25 @@ Open http://localhost:8080
 ### API keys
 
 ```bash
-# Chat completions (Nemotron via NVIDIA NIM)
+# Chat completions (OpenRouter — preferred)
+export OPENROUTER_API_KEY=sk-or-...
+export OPENROUTER_MODEL=nvidia/llama-3.1-nemotron-70b-instruct   # optional
+
+# Fallback: NVIDIA Nemotron via NIM (used when OPENROUTER_API_KEY is unset)
 export NVIDIA_API_KEY=nvapi-...
-export NEMOTRON_MODEL=nvidia/llama-3.1-nemotron-70b-instruct   # optional
 
 # Embeddings (optional — falls back to hash embedder locally, sentence-transformers in Docker)
 export OPENAI_API_KEY=sk-...
 ```
 
-Without `NVIDIA_API_KEY`, the app runs in **mock mode** (retrieved context + template answers).
+Without `OPENROUTER_API_KEY` or `NVIDIA_API_KEY`, the app runs in **mock mode** (retrieved context + template answers).
 
 ### Deploy to Fly.io
 
 See [`DEPLOY.md`](DEPLOY.md) for full instructions:
 
 ```bash
-fly secrets set NVIDIA_API_KEY=nvapi-...
+fly secrets set OPENROUTER_API_KEY=sk-or-...
 fly deploy
 ```
 

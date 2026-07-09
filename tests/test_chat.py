@@ -15,12 +15,18 @@ ROOT = Path(__file__).resolve().parents[1]
 def chat_client(tmp_path, monkeypatch):
     db_path = tmp_path / "rag.sqlite"
     monkeypatch.setenv("CHAT_DATA_DIR", str(tmp_path))
+    monkeypatch.delenv("OPENROUTER_API_KEY", raising=False)
     monkeypatch.delenv("NVIDIA_API_KEY", raising=False)
     monkeypatch.delenv("OPENAI_API_KEY", raising=False)
 
+    from chat.embeddings import HashEmbedder
     from chat.ingest import ingest
     from chat.main import create_app
     from chat.rag import VectorStore
+
+    monkeypatch.setattr("chat.embeddings.get_embedder", lambda: HashEmbedder())
+    monkeypatch.setattr("chat.ingest.get_embedder", lambda: HashEmbedder())
+    monkeypatch.setattr("chat.main.get_embedder", lambda: HashEmbedder())
 
     store = VectorStore(db_path=db_path)
     count = ingest(store=store, root=ROOT)
@@ -33,8 +39,11 @@ def test_ingest_creates_chunks(tmp_path, monkeypatch):
     monkeypatch.setenv("CHAT_DATA_DIR", str(tmp_path))
     monkeypatch.delenv("OPENAI_API_KEY", raising=False)
 
+    from chat.embeddings import HashEmbedder
     from chat.ingest import ingest
     from chat.rag import get_store
+
+    monkeypatch.setattr("chat.ingest.get_embedder", lambda: HashEmbedder())
 
     count = ingest(root=ROOT)
     store = get_store()
