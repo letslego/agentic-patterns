@@ -94,10 +94,18 @@ class HashEmbedder(Embedder):
         return vectors
 
 
+_embedder: Embedder | None = None
+
+
 def get_embedder() -> Embedder:
+    global _embedder
+    if _embedder is not None:
+        return _embedder
     if os.environ.get("OPENAI_API_KEY"):
-        return OpenAIEmbedder()
-    try:
-        return LocalEmbedder()
-    except RuntimeError:
-        return HashEmbedder()
+        _embedder = OpenAIEmbedder()
+    else:
+        try:
+            _embedder = LocalEmbedder()
+        except RuntimeError:
+            _embedder = HashEmbedder()
+    return _embedder

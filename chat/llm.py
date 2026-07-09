@@ -180,9 +180,17 @@ class MockChatLLM(ChatLLM):
         return answer
 
 
+_llm: ChatLLM | None = None
+
+
 def get_chat_llm() -> ChatLLM:
+    global _llm
+    if _llm is not None:
+        return _llm
     if os.environ.get("OPENROUTER_API_KEY"):
-        return OpenRouterClient()
-    if os.environ.get("NVIDIA_API_KEY"):
-        return NemotronClient()
-    return MockChatLLM()
+        _llm = OpenRouterClient()
+    elif os.environ.get("NVIDIA_API_KEY"):
+        _llm = NemotronClient()
+    else:
+        _llm = MockChatLLM()
+    return _llm

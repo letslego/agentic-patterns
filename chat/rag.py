@@ -112,5 +112,11 @@ def _cosine_similarity(a: list[float], b: list[float]) -> float:
     return dot / (norm_a * norm_b)
 
 
+_store: VectorStore | None = None
+
+
 def get_store() -> VectorStore:
-    return VectorStore()
+    global _store
+    if _store is None:
+        _store = VectorStore()
+    return _store
