@@ -4,6 +4,9 @@
 
 Update system behavior from user or evaluator feedback over time.
 
+![Learning and adaptation diagram](../images/learning-adaptation.svg)
+
+
 ## Reference implementation
 
 **Source:** [`code/09_learning_adaptation/main.py`](https://github.com/letslego/agentic-patterns/blob/main/code/09_learning_adaptation/main.py)

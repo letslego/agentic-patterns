@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 200" role="img" aria-label="Goal monitoring pattern">
+  <rect width="720" height="200" fill="#0f172a"/>
+  <text x="360" y="28" fill="#e2e8f0" font-family="system-ui,sans-serif" font-size="16" text-anchor="middle">Goal Setting &amp; Monitoring</text>
+  <rect x="80" y="55" width="560" height="110" rx="12" fill="#1e293b" stroke="#64748b"/>
+  <text x="110" y="82" fill="#e2e8f0" font-family="system-ui,sans-serif" font-size="13">SLA Dashboard</text>
+  <text x="110" y="108" fill="#94a3b8" font-family="system-ui,sans-serif" font-size="11">Latency p95</text>
+  <rect x="210" y="96" width="200" height="14" rx="7" fill="#334155"/>
+  <rect x="210" y="96" width="140" height="14" rx="7" fill="#22c55e"/>
+  <text x="430" y="108" fill="#bbf7d0" font-family="system-ui,sans-serif" font-size="10">70% PASS</text>
+  <text x="110" y="132" fill="#94a3b8" font-family="system-ui,sans-serif" font-size="11">Tasks completed</text>
+  <rect x="210" y="120" width="200" height="14" rx="7" fill="#334155"/>
+  <rect x="210" y="120" width="170" height="14" rx="7" fill="#fbbf24"/>
+  <text x="430" y="132" fill="#fde68a" font-family="system-ui,sans-serif" font-size="10">85% WARN</text>
+  <text x="360" y="185" fill="#94a3b8" font-family="system-ui,sans-serif" font-size="11" text-anchor="middle">Agent adjusts strategy when metrics drift from targets</text>
+</svg>

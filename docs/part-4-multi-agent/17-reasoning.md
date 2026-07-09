@@ -4,6 +4,9 @@
 
 Apply ReAct-style thought/action/observation loops for multi-step reasoning.
 
+![Reasoning diagram](../images/reasoning.svg)
+
+
 ## Reference implementation
 
 **Source:** [`code/17_reasoning/main.py`](https://github.com/letslego/agentic-patterns/blob/main/code/17_reasoning/main.py)

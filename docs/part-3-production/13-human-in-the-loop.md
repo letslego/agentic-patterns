@@ -4,6 +4,9 @@
 
 Require human approval before high-impact or irreversible actions.
 
+![Human-in-the-loop diagram](../images/human-in-the-loop.svg)
+
+
 ## Reference implementation
 
 **Source:** [`code/13_human_in_the_loop/main.py`](https://github.com/letslego/agentic-patterns/blob/main/code/13_human_in_the_loop/main.py)

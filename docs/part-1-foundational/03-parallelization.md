@@ -4,6 +4,9 @@
 
 Execute independent subtasks concurrently, then merge results.
 
+![Parallelization diagram](../images/parallelization.svg)
+
+
 ## Reference implementation
 
 **Source:** [`code/03_parallelization/main.py`](https://github.com/letslego/agentic-patterns/blob/main/code/03_parallelization/main.py)

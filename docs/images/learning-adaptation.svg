@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 200" role="img" aria-label="Learning and adaptation pattern">
+  <rect width="720" height="200" fill="#0f172a"/>
+  <text x="360" y="28" fill="#e2e8f0" font-family="system-ui,sans-serif" font-size="16" text-anchor="middle">Learning &amp; Adaptation</text>
+  <rect x="80" y="70" width="120" height="50" rx="10" fill="#334155"/>
+  <text x="140" y="100" fill="#f8fafc" font-family="system-ui,sans-serif" font-size="12" text-anchor="middle">User Feedback</text>
+  <polygon points="208,95 228,95 228,85 248,95 228,105 228,95" fill="#94a3b8"/>
+  <rect x="258" y="70" width="140" height="50" rx="10" fill="#b45309" stroke="#fbbf24"/>
+  <text x="328" y="100" fill="#fef3c7" font-family="system-ui,sans-serif" font-size="12" text-anchor="middle">Update Policy</text>
+  <polygon points="406,95 426,95 426,85 446,95 426,105 426,95" fill="#94a3b8"/>
+  <rect x="456" y="70" width="180" height="50" rx="10" fill="#065f46" stroke="#34d399"/>
+  <text x="546" y="92" fill="#d1fae5" font-family="system-ui,sans-serif" font-size="12" text-anchor="middle">Revised Behavior</text>
+  <text x="546" y="108" fill="#86efac" font-family="system-ui,sans-serif" font-size="10" text-anchor="middle">prompt / routing / tools</text>
+  <path d="M546 120 Q546 150 140 150 Q80 150 80 120" fill="none" stroke="#475569" stroke-width="2" stroke-dasharray="5 4"/>
+  <rect x="260" y="140" width="200" height="36" rx="8" fill="#1e293b" stroke="#64748b"/>
+  <text x="360" y="163" fill="#94a3b8" font-family="system-ui,sans-serif" font-size="11" text-anchor="middle">Measure quality before / after update</text>
+</svg>

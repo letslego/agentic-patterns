@@ -4,6 +4,9 @@
 
 Rank backlog items by urgency and impact to sequence agent work.
 
+![Prioritization diagram](../images/prioritization.svg)
+
+
 ## Reference implementation
 
 **Source:** [`code/20_prioritization/main.py`](https://github.com/letslego/agentic-patterns/blob/main/code/20_prioritization/main.py)

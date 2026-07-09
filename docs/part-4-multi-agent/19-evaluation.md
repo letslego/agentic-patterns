@@ -4,6 +4,9 @@
 
 Score agent outputs and aggregate quality metrics over time.
 
+![Evaluation diagram](../images/evaluation.svg)
+
+
 ## Reference implementation
 
 **Source:** [`code/19_evaluation/main.py`](https://github.com/letslego/agentic-patterns/blob/main/code/19_evaluation/main.py)

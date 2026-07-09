@@ -4,6 +4,9 @@
 
 Select models and strategies based on token, latency, and cost budgets.
 
+![Resource optimization diagram](../images/resource-optimization.svg)
+
+
 ## Reference implementation
 
 **Source:** [`code/16_resource_optimization/main.py`](https://github.com/letslego/agentic-patterns/blob/main/code/16_resource_optimization/main.py)

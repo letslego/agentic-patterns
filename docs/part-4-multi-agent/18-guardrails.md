@@ -4,6 +4,9 @@
 
 Validate inputs and outputs against policy before and after generation.
 
+![Guardrails diagram](../images/guardrails.svg)
+
+
 ## Reference implementation
 
 **Source:** [`code/18_guardrails/main.py`](https://github.com/letslego/agentic-patterns/blob/main/code/18_guardrails/main.py)
