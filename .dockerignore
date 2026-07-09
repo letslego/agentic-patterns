@@ -1,0 +1,17 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+*.egg-info/
+dist/
+build/
+data/
+
+# Node
+node_modules/
+docs/.vitepress/dist/
+docs/.vitepress/cache/
+
+# OS
+.DS_Store
