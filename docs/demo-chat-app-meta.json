@@ -1,0 +1,22 @@
+{
+  "url": "https://agentic-patterns-chat.fly.dev/",
+  "output": "/Users/amitabhakarmakar/projects/agentic-patterns/docs/demo-chat-app.mp4",
+  "questions": [
+    {
+      "question": "What is prompt chaining?",
+      "response_preview": "Prompt chaining is a design pattern that involves breaking complex tasks into a linear sequence of focused calls to a language model (LLM). Each step in the chain consumes the output of the previous step as context, allowing for a more structured and manageable approach to problem-solving.\n\nKey Features:\nDecomposition: The task is decomposed into smaller, single-purpose steps.\nValidation: Intermediate outputs can be validated before proceeding to the next step.\nFocused Context: Each step focuses"
+    },
+    {
+      "question": "Show me code for pattern 03 parallelization",
+      "response_preview": "Certainly! Below is the runnable Python code for Pattern 03: Parallelization, which demonstrates how to execute independent subtasks concurrently and then merge the results.\n\nCode Implementation:\n\nYou can find the full implementation in the repository at code/03_parallelization/main.py.\n\nHere\u2019s the code:\n\nfrom __future__ import annotations\n\nimport asyncio\n\nfrom agentic_patterns.common import get_llm\n\n\nasync def theme_from_comment(comment: str) -> str:\n    llm = get_llm()\n    return llm.complete("
+    },
+    {
+      "question": "How does reflection work in agentic systems?",
+      "response_preview": "Reflection in agentic systems is a design pattern that enables agents to generate drafts, critique them, and revise in a loop until certain quality thresholds are met. This iterative process allows agents to improve their outputs through self-assessment and refinement.\n\nKey Features:\nDrafting: The agent creates an initial draft of the output.\nCritiquing: The agent evaluates the draft against an explicit rubric to identify areas for improvement.\nRevising: Based on the critique, the agent revises "
+    },
+    {
+      "question": "What's the difference between routing and planning?",
+      "response_preview": "Routing and planning are both important design patterns in agentic systems, but they serve different purposes and operate at different levels of abstraction.\n\nRouting (Pattern 02)\nPurpose: Routing is focused on classifying incoming requests and dispatching them to specialized handlers or sub-agents based on the intent of the request.\nFunctionality: It separates the classification of requests from their execution. For example, in an IT helpdesk scenario, a routing system might direct requests to "
+    }
+  ]
+}
