@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import os
+import threading
 from abc import ABC, abstractmethod
 
 
@@ -95,17 +96,58 @@ class HashEmbedder(Embedder):
 
 
 _embedder: Embedder | None = None
+_embedder_error: BaseException | None = None
+_embedder_ready = threading.Event()
+_embedder_lock = threading.Lock()
+_warmup_started = False
 
 
-def get_embedder() -> Embedder:
-    global _embedder
-    if _embedder is not None:
-        return _embedder
+def _create_embedder() -> Embedder:
     if os.environ.get("OPENAI_API_KEY"):
-        _embedder = OpenAIEmbedder()
-    else:
-        try:
-            _embedder = LocalEmbedder()
-        except RuntimeError:
-            _embedder = HashEmbedder()
+        return OpenAIEmbedder()
+    try:
+        return LocalEmbedder()
+    except RuntimeError:
+        return HashEmbedder()
+
+
+def _load_embedder() -> None:
+    global _embedder, _embedder_error
+    try:
+        _embedder = _create_embedder()
+    except BaseException as exc:
+        _embedder_error = exc
+    finally:
+        _embedder_ready.set()
+
+
+def start_embedder_warmup() -> None:
+    global _warmup_started
+    with _embedder_lock:
+        if _warmup_started:
+            return
+        _warmup_started = True
+        thread = threading.Thread(target=_load_embedder, name="embedder-warmup", daemon=True)
+        thread.start()
+
+
+def embedder_status() -> dict[str, str | bool | None]:
+    if _embedder is not None:
+        return {"ready": True, "model": _embedder.model_name, "error": None}
+    if _embedder_error is not None:
+        return {"ready": False, "model": None, "error": str(_embedder_error)}
+    if _warmup_started:
+        return {"ready": False, "model": None, "error": None}
+    return {"ready": False, "model": None, "error": None}
+
+
+def get_embedder(*, timeout: float | None = None) -> Embedder:
+    start_embedder_warmup()
+    if timeout is None:
+        timeout = float(os.getenv("EMBEDDER_WARMUP_TIMEOUT", "120"))
+    if not _embedder_ready.wait(timeout=timeout):
+        raise RuntimeError("Embedding model is still warming up; try again shortly.")
+    if _embedder_error is not None:
+        raise RuntimeError(f"Embedding model failed to load: {_embedder_error}") from _embedder_error
+    assert _embedder is not None
     return _embedder

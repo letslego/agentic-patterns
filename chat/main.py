@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 import json
+import logging
 import os
+import threading
 from pathlib import Path
 from typing import Any, Iterator
 
@@ -13,10 +15,13 @@ from fastapi.responses import FileResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
-from chat.embeddings import get_embedder
+from chat import redis_cache
+from chat.embeddings import embedder_status, get_embedder, start_embedder_warmup
 from chat.llm import get_chat_llm
 from chat.patterns import patterns_payload
 from chat.rag import get_store
+
+logger = logging.getLogger(__name__)
 
 STATIC_DIR = Path(__file__).parent / "static"
 
@@ -47,6 +52,17 @@ class ChatRequest(BaseModel):
     top_k: int = Field(default=6, ge=1, le=12)
 
 
+def _background_warmup() -> None:
+    try:
+        store = get_store()
+        synced = store.sync_redis_from_sqlite()
+        if synced:
+            logger.info("Redis cache warmed with %d chunks", synced)
+    except Exception as exc:
+        logger.warning("Background Redis sync failed: %s", exc)
+    start_embedder_warmup()
+
+
 def create_app() -> FastAPI:
     app = FastAPI(title="Agentic Patterns Chat", version="0.1.0")
     app.add_middleware(
@@ -56,16 +72,34 @@ def create_app() -> FastAPI:
         allow_headers=["*"],
     )
 
+    @app.on_event("startup")
+    def on_startup() -> None:
+        threading.Thread(target=_background_warmup, name="rag-warmup", daemon=True).start()
+
     @app.get("/api/health")
     def health() -> dict[str, Any]:
-        store = get_store()
         llm = get_chat_llm()
+        embedder = embedder_status()
+        chunks: int | None = None
+        embedding_model: str | None = None
+        try:
+            store = get_store()
+            chunks = store.count()
+            embedding_model = store.get_meta("embedding_model")
+        except Exception as exc:
+            logger.warning("Health chunk lookup failed: %s", exc)
+
         return {
             "status": "ok",
-            "chunks": store.count(),
+            "ready": embedder["ready"] and (chunks or 0) > 0,
+            "embedder_ready": embedder["ready"],
+            "embedder_model": embedder["model"],
+            "embedder_error": embedder["error"],
+            "chunks": chunks or 0,
+            "redis_enabled": redis_cache.redis_url() is not None,
             "llm_provider": llm.provider,
             "llm_model": llm.model_name,
-            "embedding_model": store.get_meta("embedding_model"),
+            "embedding_model": embedding_model,
             "mock_mode": llm.provider == "mock",
         }
 
@@ -83,7 +117,13 @@ def create_app() -> FastAPI:
             raise HTTPException(status_code=400, detail="at least one user message required")
 
         query = user_messages[-1].content
-        context, sources = _retrieve_context(query, pattern_number=req.pattern_number, top_k=req.top_k)
+        try:
+            context, sources = _retrieve_context(
+                query, pattern_number=req.pattern_number, top_k=req.top_k
+            )
+        except RuntimeError as exc:
+            raise HTTPException(status_code=503, detail=str(exc)) from exc
+
         system = _build_system_prompt(context)
 
         llm_messages: list[dict[str, str]] = [{"role": "system", "content": system}]
@@ -146,9 +186,29 @@ def _retrieve_context(
     store = get_store()
     if store.count() == 0:
         return "", []
-    embedder = get_embedder()
-    query_vec = embedder.embed([query])[0]
-    chunks = store.query(query_vec, top_k=top_k, pattern_number=pattern_number)
+
+    normalized = redis_cache.normalize_query(query)
+    cached_ids = redis_cache.get_cached_query_results(
+        normalized, pattern_number=pattern_number, top_k=top_k
+    )
+    if cached_ids is not None:
+        chunks = store.query_by_ids(cached_ids)
+        for chunk in chunks:
+            chunk.score = 1.0
+    else:
+        query_vec = redis_cache.get_cached_query_embedding(normalized)
+        if query_vec is None:
+            embedder = get_embedder()
+            query_vec = embedder.embed([query])[0]
+            redis_cache.cache_query_embedding(normalized, query_vec)
+        chunks = store.query(query_vec, top_k=top_k, pattern_number=pattern_number)
+        redis_cache.cache_query_results(
+            normalized,
+            pattern_number=pattern_number,
+            top_k=top_k,
+            chunk_ids=[chunk.id for chunk in chunks],
+        )
+
     parts: list[str] = []
     sources: list[dict[str, str]] = []
     seen: set[str] = set()

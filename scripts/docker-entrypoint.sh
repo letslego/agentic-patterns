@@ -36,12 +36,5 @@ count = ingest()
 print(f"Ingested {count} chunks into {store.db_path}")
 PY
 
-# Warm embedding model before serving traffic (avoids first-request timeout/OOM).
-python - <<'PY'
-from chat.embeddings import get_embedder
-
-embedder = get_embedder()
-print(f"Embedder ready: {embedder.model_name}")
-PY
-
+# Start serving immediately; embedder + Redis sync happen in background via FastAPI startup.
 exec uvicorn chat.main:app --host 0.0.0.0 --port "${PORT:-8080}"
