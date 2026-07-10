@@ -202,8 +202,7 @@ def _adjust_score(score: float, meta: dict[str, Any], *, pattern_number: int | N
     """Prefer pattern guides over incidental demo text in code examples."""
     if meta.get("content_type") == "doc":
         score *= 1.15
-    is_demo = meta.get("demo_rag_corpus") or meta.get("source_file") == "code/14_rag/main.py"
-    if is_demo and pattern_number != 14:
+    if meta.get("demo_rag_corpus") and pattern_number != 14:
         score *= 0.55
     return score
 

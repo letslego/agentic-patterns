@@ -61,8 +61,6 @@ def _metadata_for(path: Path) -> dict:
         "pattern_name": pattern.name if pattern else None,
         "pattern_slug": pattern.slug if pattern else None,
     }
-    if rel == "code/14_rag/main.py":
-        meta["demo_rag_corpus"] = True
     return meta
 
 
