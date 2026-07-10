@@ -166,6 +166,7 @@ class VectorStore:
             if pattern_number is not None and meta.get("pattern_number") != pattern_number:
                 continue
             score = _cosine_similarity(embedding, vec)
+            score = _adjust_score(score, meta, pattern_number=pattern_number)
             scored.append(Chunk(id=chunk_id, text=text, metadata=meta, score=score))
         scored.sort(key=lambda c: c.score, reverse=True)
         return scored[:top_k]
@@ -195,6 +196,24 @@ def _cosine_similarity(a: list[float], b: list[float]) -> float:
     if norm_a == 0 or norm_b == 0:
         return 0.0
     return dot / (norm_a * norm_b)
+
+
+def _adjust_score(score: float, meta: dict[str, Any], *, pattern_number: int | None) -> float:
+    """Prefer pattern guides over incidental demo text in code examples."""
+    if meta.get("content_type") == "doc":
+        score *= 1.15
+    is_demo = meta.get("demo_rag_corpus") or meta.get("source_file") == "code/14_rag/main.py"
+    if is_demo and pattern_number != 14:
+        score *= 0.55
+    return score
+
+
+def corpus_version(store: VectorStore | None = None) -> str:
+    """Version token for query-cache namespacing; changes when the index changes."""
+    vector_store = store or get_store()
+    count = vector_store.get_meta_from_sqlite("chunk_count") or str(vector_store.count())
+    model = vector_store.get_meta_from_sqlite("embedding_model") or ""
+    return f"{count}:{model}"
 
 
 _store: VectorStore | None = None
