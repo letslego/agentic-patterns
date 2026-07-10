@@ -19,7 +19,7 @@ from chat import redis_cache
 from chat.embeddings import embedder_status, get_embedder, start_embedder_warmup
 from chat.llm import get_chat_llm
 from chat.patterns import patterns_payload
-from chat.rag import get_store
+from chat.rag import corpus_version, get_store
 
 logger = logging.getLogger(__name__)
 
@@ -28,11 +28,14 @@ STATIC_DIR = Path(__file__).parent / "static"
 SYSTEM_PROMPT_HEAD = """You are an expert on the 21 agentic design patterns from the agentic-patterns repository.
 
 Rules:
+- Answer ONLY from the retrieved context below. Do not invent facts from outside knowledge.
 - Always cite pattern numbers and names when relevant (e.g. "Pattern 03: Parallelization").
 - Include runnable Python code recipes adapted from the repository when the user asks how to implement something.
 - Reference actual repo paths: code lives in `code/NN_name/main.py`, shared primitives in `agentic_patterns/`, guides in `docs/`.
 - Keep answers practical and concise. Use markdown with fenced Python code blocks.
 - If retrieved context is insufficient, say so and suggest which pattern chapter to read.
+- The handbook in `code/14_rag/main.py` (HandbookSection, expense reports, remote work) is a **fictional RAG demo** for Pattern 14. Never present it as real company policy unless the user explicitly asks about Pattern 14's RAG example code.
+- Questions about HR policies, expense reports, or remote work that are not about Pattern 14 should be answered with: the repository covers agentic design patterns, not workplace policy.
 
 Retrieved context from the repository:
 """
@@ -54,6 +57,7 @@ class ChatRequest(BaseModel):
 
 def _background_warmup() -> None:
     try:
+        redis_cache.purge_legacy_keys()
         store = get_store()
         synced = store.sync_redis_from_sqlite()
         if synced:
@@ -187,9 +191,10 @@ def _retrieve_context(
     if store.count() == 0:
         return "", []
 
+    version = corpus_version(store)
     normalized = redis_cache.normalize_query(query)
     cached_ids = redis_cache.get_cached_query_results(
-        normalized, pattern_number=pattern_number, top_k=top_k
+        normalized, pattern_number=pattern_number, top_k=top_k, corpus_version=version
     )
     if cached_ids is not None:
         chunks = store.query_by_ids(cached_ids)
@@ -207,6 +212,7 @@ def _retrieve_context(
             pattern_number=pattern_number,
             top_k=top_k,
             chunk_ids=[chunk.id for chunk in chunks],
+            corpus_version=version,
         )
 
     parts: list[str] = []

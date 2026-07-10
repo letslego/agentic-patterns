@@ -10,7 +10,19 @@ from typing import Any
 
 logger = logging.getLogger(__name__)
 
-PREFIX = "rag:"
+LEGACY_PREFIX = "rag:"
+DEFAULT_PREFIX = "agentic-patterns:"
+
+
+def key_prefix() -> str:
+    """Project-scoped Redis key prefix to avoid collisions across Fly apps."""
+    raw = os.getenv("RAG_KEY_PREFIX", DEFAULT_PREFIX).strip()
+    if not raw:
+        raw = DEFAULT_PREFIX
+    return raw if raw.endswith(":") else f"{raw}:"
+
+
+PREFIX = key_prefix()
 CHUNK_IDS_KEY = f"{PREFIX}chunks:ids"
 QUERY_CACHE_TTL = int(os.getenv("RAG_QUERY_CACHE_TTL", "3600"))
 
@@ -61,10 +73,34 @@ def _query_emb_key(normalized_query: str) -> str:
     return f"{PREFIX}query:emb:{digest}"
 
 
-def _query_results_key(normalized_query: str, pattern_number: int | None, top_k: int) -> str:
+def _query_results_key(
+    normalized_query: str,
+    pattern_number: int | None,
+    top_k: int,
+    *,
+    corpus_version: str = "",
+) -> str:
     scope = pattern_number if pattern_number is not None else "all"
-    digest = hashlib.sha256(f"{normalized_query}|{scope}|{top_k}".encode()).hexdigest()[:32]
+    digest = hashlib.sha256(
+        f"{normalized_query}|{scope}|{top_k}|{corpus_version}".encode()
+    ).hexdigest()[:32]
     return f"{PREFIX}query:results:{digest}"
+
+
+def purge_legacy_keys() -> int:
+    """Remove pre-namespace keys (e.g. shared ``rag:`` prefix) from Redis."""
+    client = get_redis()
+    if client is None:
+        return 0
+    try:
+        keys = list(client.scan_iter(match=f"{LEGACY_PREFIX}*"))
+        if keys:
+            client.delete(*keys)
+            logger.info("Purged %d legacy Redis keys with prefix %r", len(keys), LEGACY_PREFIX)
+        return len(keys)
+    except Exception as exc:
+        logger.warning("Redis legacy purge failed: %s", exc)
+        return 0
 
 
 def normalize_query(query: str) -> str:
@@ -190,13 +226,16 @@ def cache_query_results(
     pattern_number: int | None,
     top_k: int,
     chunk_ids: list[str],
+    corpus_version: str = "",
 ) -> None:
     client = get_redis()
     if client is None:
         return
     try:
         client.setex(
-            _query_results_key(normalized_query, pattern_number, top_k),
+            _query_results_key(
+                normalized_query, pattern_number, top_k, corpus_version=corpus_version
+            ),
             QUERY_CACHE_TTL,
             json.dumps(chunk_ids, separators=(",", ":")),
         )
@@ -209,12 +248,17 @@ def get_cached_query_results(
     *,
     pattern_number: int | None,
     top_k: int,
+    corpus_version: str = "",
 ) -> list[str] | None:
     client = get_redis()
     if client is None:
         return None
     try:
-        raw = client.get(_query_results_key(normalized_query, pattern_number, top_k))
+        raw = client.get(
+            _query_results_key(
+                normalized_query, pattern_number, top_k, corpus_version=corpus_version
+            )
+        )
         if not raw:
             return None
         return json.loads(raw)
