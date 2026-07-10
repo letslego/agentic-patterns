@@ -91,8 +91,11 @@ class MockLLMClient(LLMClient):
         if "merge themes" in text:
             return "Users report onboarding friction and unclear billing emails."
 
-        if "retrieve" in text and "policy" in text:
-            return "[doc-17] Remote work policy allows 2 WFH days/week."
+        if "retrieved documents" in text or "context:\n" in text:
+            return (
+                "Based on the retrieved documents: RAG embeds the query and chunks, "
+                "ranks them by cosine similarity, and grounds the LLM answer in the top-k hits."
+            )
 
         if "score" in text or "rate answer" in text:
             return "0.78"
