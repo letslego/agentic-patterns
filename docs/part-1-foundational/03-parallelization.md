@@ -11,7 +11,7 @@ Execute independent subtasks concurrently, then merge results.
 
 **Source:** [`code/03_parallelization/main.py`](https://github.com/letslego/agentic-patterns/blob/main/code/03_parallelization/main.py)
 
-Uses a thread pool to summarize chunks in parallel before a merge step.
+Uses `asyncio.gather` to summarize pattern descriptions in parallel before a merge step.
 
 ### Run locally
 

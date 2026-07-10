@@ -10,7 +10,7 @@ Coordinate specialist agents through a coordinator role and shared context.
 
 **Source:** [`code/07_multi_agent/main.py`](https://github.com/letslego/agentic-patterns/blob/main/code/07_multi_agent/main.py)
 
-Researcher → PM outline → Writer draft → PM review pipeline.
+Researcher → Writer → Reviewer sequential crew using `agentic_patterns.kernel.Crew`.
 
 ### Run locally
 

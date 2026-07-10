@@ -10,7 +10,7 @@ Classify incoming requests and dispatch them to specialized handlers or sub-agen
 
 **Source:** [`code/02_routing/main.py`](https://github.com/letslego/agentic-patterns/blob/main/code/02_routing/main.py)
 
-IT helpdesk router maps tickets to `password_reset`, `software_install`, or `general_support` handlers via `agentic_patterns.kernel.Router`.
+Pattern question router maps requests to `code_example`, `concept_explanation`, or `pattern_comparison` handlers via `agentic_patterns.kernel.Router`.
 
 ### Run locally
 

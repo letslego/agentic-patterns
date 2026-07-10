@@ -1,4 +1,4 @@
-"""Pattern 03: Parallelization — concurrent survey theme extraction."""
+"""Pattern 03: Parallelization — concurrent LLM calls, then merge."""
 
 from __future__ import annotations
 
@@ -7,30 +7,30 @@ import asyncio
 from agentic_patterns.common import get_llm
 
 
-async def theme_from_comment(comment: str) -> str:
+async def summarize_chunk(chunk: str) -> str:
     llm = get_llm()
-    return llm.complete(f"Summarize this survey comment into one theme:\n{comment}")
+    return llm.complete(f"Summarize this text in one line:\n{chunk}")
 
 
-async def parallel_survey_themes(comments: list[str]) -> list[str]:
-    return await asyncio.gather(*(theme_from_comment(c) for c in comments))
+async def parallel_summaries(chunks: list[str]) -> list[str]:
+    return await asyncio.gather(*(summarize_chunk(c) for c in chunks))
 
 
-def synthesize(themes: list[str]) -> str:
+def merge_summaries(summaries: list[str]) -> str:
     llm = get_llm()
-    joined = "\n".join(f"- {t}" for t in themes)
-    return llm.complete(f"Merge themes from survey responses:\n{joined}")
+    joined = "\n".join(f"- {s}" for s in summaries)
+    return llm.complete(f"Merge these summaries into one paragraph:\n{joined}")
 
 
-async def run(comments: list[str]) -> str:
-    themes = await parallel_survey_themes(comments)
-    return synthesize(themes)
+async def run(chunks: list[str]) -> str:
+    summaries = await parallel_summaries(chunks)
+    return merge_summaries(summaries)
 
 
 if __name__ == "__main__":
     samples = [
-        "Setup wizard skipped DNS step and I was confused.",
-        "Invoice labels don't match our PO numbers.",
-        "Love the dashboard, but export CSV failed once.",
+        "Prompt chaining breaks tasks into sequential LLM stages.",
+        "Routing classifies input and dispatches to specialized handlers.",
+        "RAG retrieves documents before generating grounded answers.",
     ]
     print(asyncio.run(run(samples)))
