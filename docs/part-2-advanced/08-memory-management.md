@@ -11,7 +11,7 @@ Combine short-term conversation buffer with persistent long-term store.
 
 **Source:** [`code/08_memory_management/main.py`](https://github.com/letslego/agentic-patterns/blob/main/code/08_memory_management/main.py)
 
-`MemoryStore` uses a deque for short-term memory and a dict for long-term recall.
+`EpisodicMemory` uses a deque for short-term events and a dict for long-term facts.
 
 ### Run locally
 

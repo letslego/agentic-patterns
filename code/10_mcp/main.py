@@ -39,11 +39,19 @@ class CapabilityClient:
 if __name__ == "__main__":
     host = CapabilityHost()
     host.register(
-        Capability("resource", "policy/handbook", lambda _: "Handbook section 4.2: travel policy")
+        Capability(
+            "resource",
+            "patterns/03-parallelization",
+            lambda _: "Parallelization runs independent LLM calls concurrently, then merges results.",
+        )
     )
     host.register(
-        Capability("tool", "expense_lookup", lambda p: f"Trip {p['trip_id']} total $842")
+        Capability(
+            "tool",
+            "lookup_pattern",
+            lambda p: f"Pattern {p['number']:02d}: see code/{p['number']:02d}_*/main.py",
+        )
     )
     client = CapabilityClient(host)
-    print(client.read("policy/handbook"))
-    print(client.tool("expense_lookup", trip_id="T-991"))
+    print(client.read("patterns/03-parallelization"))
+    print(client.tool("lookup_pattern", number=14))

@@ -1,22 +1,22 @@
-"""Pattern 07: Multi-Agent Collaboration — incident response crew."""
+"""Pattern 07: Multi-Agent Collaboration — sequential specialist crew."""
 
 from __future__ import annotations
 
 from agentic_patterns.kernel import Crew, Specialist
 
 
-def run_incident_response(alert: str) -> list[tuple[str, str]]:
+def run_pattern_crew(task: str) -> list[tuple[str, str]]:
     crew = Crew(
         members=[
-            Specialist("SRE", "triage production alerts and identify blast radius"),
-            Specialist("Comms", "draft customer-facing incident updates"),
-            Specialist("Fix", "propose and validate remediation steps"),
+            Specialist("Researcher", "gather facts and references for the task"),
+            Specialist("Writer", "draft a clear explanation from prior research"),
+            Specialist("Reviewer", "check accuracy and suggest final edits"),
         ]
     )
-    return crew.execute(alert)
+    return crew.execute(task)
 
 
 if __name__ == "__main__":
-    transcript = run_incident_response("Checkout API error rate exceeded 4% for 6 minutes")
+    transcript = run_pattern_crew("Explain Pattern 03: Parallelization with a code sketch")
     for role, output in transcript:
         print(f"\n[{role}]\n{output}")

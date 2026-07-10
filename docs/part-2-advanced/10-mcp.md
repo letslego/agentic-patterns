@@ -11,7 +11,7 @@ Standardize how agents discover resources and invoke tools via a protocol server
 
 **Source:** [`code/10_mcp/main.py`](https://github.com/letslego/agentic-patterns/blob/main/code/10_mcp/main.py)
 
-Minimal MCP server/client with `resources/read` and `tools/call` methods.
+Minimal capability host/client with pattern resources (`resources/read`) and lookup tools (`tools/call`).
 
 ### Run locally
 

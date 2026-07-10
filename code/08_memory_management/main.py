@@ -30,7 +30,8 @@ class EpisodicMemory:
 
 if __name__ == "__main__":
     memory = EpisodicMemory()
-    memory.store_fact("tenant", "northwind")
-    memory.observe("User asked about SSO rollout timeline.")
-    memory.observe("User prefers weekly status emails.")
-    print(memory.answer("Which tenant am I working with and what did I ask about?"))
+    memory.store_fact("session_id", "demo-42")
+    memory.store_fact("focus_pattern", "08_memory_management")
+    memory.observe("User asked how episodic memory differs from long-term facts.")
+    memory.observe("User wants a minimal runnable example.")
+    print(memory.answer("What pattern are we discussing and what did I ask?"))
