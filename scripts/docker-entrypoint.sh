@@ -25,17 +25,17 @@ def chunk_count(db_path: Path) -> int:
 
 def copy_baked_index(store) -> int:
     print(f"Refreshing volume from baked index at {BAKED_DIR}")
+    db_path = store.db_path
     store.close()
-    store.db_path.parent.mkdir(parents=True, exist_ok=True)
+    db_path.parent.mkdir(parents=True, exist_ok=True)
     for item in BAKED_DIR.iterdir():
-        dest = store.db_path.parent / item.name
+        dest = db_path.parent / item.name
         if item.is_file():
             shutil.copy2(item, dest)
         elif item.is_dir():
             shutil.copytree(item, dest, dirs_exist_ok=True)
-    store = get_store()
-    count = store.count()
-    print(f"Volume now has {count} chunks at {store.db_path}")
+    count = chunk_count(db_path)
+    print(f"Volume now has {count} chunks at {db_path}")
     return count
 
 
@@ -43,16 +43,12 @@ store = get_store()
 volume_count = store.count()
 baked_count = chunk_count(BAKED_DB)
 
-if baked_count > volume_count:
+if BAKED_DB.is_file():
     copy_baked_index(store)
     raise SystemExit(0)
 
 if volume_count > 0:
     print(f"RAG store ready: {volume_count} chunks at {store.db_path}")
-    raise SystemExit(0)
-
-if BAKED_DB.is_file():
-    copy_baked_index(store)
     raise SystemExit(0)
 
 print("No baked index found; running ingest…")
