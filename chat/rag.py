@@ -110,15 +110,21 @@ class VectorStore:
         row = self._conn.execute("SELECT COUNT(*) AS c FROM chunks").fetchone()
         return int(row["c"])
 
-    def sync_redis_from_sqlite(self) -> int:
-        """Populate Redis from SQLite when the cache is empty."""
+    def sync_redis_from_sqlite(self, *, force: bool = False) -> int:
+        """Populate Redis from SQLite when empty or when force/count mismatch."""
         if redis_cache.get_redis() is None:
             return 0
-        if (redis_cache.count_chunks() or 0) > 0:
-            return redis_cache.count_chunks() or 0
 
+        sqlite_count = int(self._conn.execute("SELECT COUNT(*) AS c FROM chunks").fetchone()["c"])
+        redis_count = redis_cache.count_chunks() or 0
+        if not force and redis_count > 0 and redis_count == sqlite_count:
+            return redis_count
+
+        redis_cache.clear_cache()
         rows = self._conn.execute("SELECT id, text, metadata, embedding FROM chunks").fetchall()
         if not rows:
+            with self._index_lock:
+                self._chunk_index = None
             return 0
 
         for row in rows:
