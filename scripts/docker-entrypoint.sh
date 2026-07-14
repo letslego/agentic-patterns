@@ -45,6 +45,13 @@ baked_count = chunk_count(BAKED_DB)
 
 if BAKED_DB.is_file():
     copy_baked_index(store)
+    try:
+        from chat import redis_cache
+
+        redis_cache.clear_cache()
+        print("Cleared Redis cache so the refreshed SQLite index can resync")
+    except Exception as exc:  # noqa: BLE001 - startup best-effort
+        print(f"Redis clear skipped: {exc}")
     raise SystemExit(0)
 
 if volume_count > 0:
